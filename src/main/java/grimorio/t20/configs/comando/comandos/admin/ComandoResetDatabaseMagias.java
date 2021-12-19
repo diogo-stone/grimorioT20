@@ -111,4 +111,9 @@ public class ComandoResetDatabaseMagias implements IComando {
                 "(atualiza o banco de dados de magias do bot)\n" +
                 "Uso: `%s" + NOME + "`";
     }
+
+    @Override
+    public String getResumoComando() {
+        return "\n`%s" + NOME + "`\nImporta novamente as magias a partir do arquivo base.\n";
+    }
 }

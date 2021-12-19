@@ -1,18 +1,26 @@
 package grimorio.t20.configs.comando.comandos;
 
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import grimorio.t20.configs.comando.ComandoContext;
 import grimorio.t20.configs.comando.IComando;
 import grimorio.t20.database.IDatabaseGerenciar;
 import grimorio.t20.struct.Magia;
 import grimorio.t20.struct.Padroes;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class ComandoMagia implements IComando {
 
     public static final String NOME = "magia";
+    private final EventWaiter waiter;
+
+    public ComandoMagia(EventWaiter waiter) {
+        this.waiter = waiter;
+    }
 
     @Override
     public void gerenciar(ComandoContext context) {
@@ -44,6 +52,58 @@ public class ComandoMagia implements IComando {
             return;
         }
 
+        int i = 1;
+        String magias = "";
+        for (Magia magia: mapMagias.values()) {
+            magias = magias.concat(String.format("\n**[%d]** %s", i++, magia.getNome()));
+        }
+
+        canal.sendMessageEmbeds(
+                Padroes.getMensagemSucesso(
+                    "Escolha uma magia",
+                    String.format("Sua consulta ao acervo retornou muitos resultados.\nDigite o número referente a magia " +
+                            "que desejas verificar.\n%s", magias))
+                .build())
+            .queue((message -> {
+                this.waiter.waitForEvent(
+                        MessageReceivedEvent.class,
+                        (e) -> e.getAuthor().getIdLong() == context.getAuthor().getIdLong() && !e.getAuthor().isBot(),
+                        (e) -> {
+                            message.delete().queue();
+                            String idStr = e.getMessage().getContentRaw();
+                            if (idStr.matches("\\d+")) {
+                                e.getMessage().delete().queue();
+                                int id = Integer.parseInt(idStr);
+                                if (id <= mapMagias.size()) {
+                                    Magia magia = (Magia) mapMagias.values().toArray()[id - 1];
+                                    if (magia != null)
+                                        canal.sendMessageEmbeds(
+                                                Padroes.getMensagemMagia(magia).build()
+                                        ).queue();
+                                    else
+                                        enviaMensagemOpcaoNaoExiste(canal);
+                                } else {
+                                    enviaMensagemOpcaoNaoExiste(canal);
+                                }
+                            } else {
+                                enviaMensagemOpcaoNaoExiste(canal);
+                            }
+                        },
+                        5L, TimeUnit.SECONDS,
+                        () -> {
+                            message.delete().queue();
+                            canal.sendMessageEmbeds(
+                                    Padroes.getMensagemErro(
+                                            "Que infortúnio",
+                                            "_Eu não tenho todo tempo do mundo, mortal.\nVolte quando souber " +
+                                                    "o que procuras.\n\n" +
+                                                    "(você não selecionou uma magia da lista)_"
+                                    ).build()
+                            ).queue();
+                        }
+                );
+            }));
+
         String s = "";
     }
 
@@ -61,7 +121,25 @@ public class ComandoMagia implements IComando {
     }
 
     @Override
+    public String getResumoComando() {
+        return "\n`%s" + NOME + " <parte_do_nome_da_magia>`\nConsulta a magia informada, retornando as informações " +
+                "dela ou uma lista de seleção com base no nome informado.\n";
+    }
+
+    @Override
     public List<String> getAliases() {
         return List.of("m", "ma", "feitico", "feitiço");
     }
+
+    private void enviaMensagemOpcaoNaoExiste(TextChannel canal) {
+        canal.sendMessageEmbeds(
+                Padroes.getMensagemErro(
+                        "Que infortúnio",
+                        "_Essa opção não existe, mortal.\nVolte quando souber " +
+                                "o que procuras.\n\n" +
+                                "(você não informou um valor válido)_"
+                ).build()
+        ).queue();
+    }
+
 }

@@ -1,11 +1,10 @@
 package grimorio.t20;
 
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import grimorio.t20.configs.Config;
-import grimorio.t20.database.SQLiteDataSource;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import javax.security.auth.login.LoginException;
-import java.sql.SQLException;
 
 public class Bot {
 
@@ -15,8 +14,10 @@ public class Bot {
             System.err.println("Token não informado.");
             return;
         }
+        EventWaiter waiter = new EventWaiter();
+
         JDABuilder jda = JDABuilder.createDefault(token);
-        jda.addEventListeners(new ComandoListener())
+        jda.addEventListeners(new ComandoListener(waiter), waiter)
                 .setActivity(Activity.watching("Prefixo: !@"))
                 .build();
     }

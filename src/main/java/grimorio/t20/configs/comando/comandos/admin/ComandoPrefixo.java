@@ -64,6 +64,16 @@ public class ComandoPrefixo implements IComando {
                 "Uso: `%s"+NOME+" <novo_prefixo>`";
     }
 
+    @Override
+    public String getResumoComando() {
+        return "\n`%s" + NOME + " <novo_prefixo>`\nDefine o prefixo do bot no servidor.\n";
+    }
+
+    @Override
+    public List<String> getAliases() {
+        return List.of("setprefixo");
+    }
+
     private void updatePrefixo(long guildId, String novoPrefixo) {
         VeryBadDesign.PREFIXES.put(guildId, novoPrefixo);
         IDatabaseGerenciar.INSTANCE.setPrefixo(guildId, novoPrefixo);

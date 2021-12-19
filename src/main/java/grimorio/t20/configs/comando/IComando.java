@@ -10,6 +10,8 @@ public interface IComando {
 
     String getAjuda();
 
+    String getResumoComando();
+
     default List<String> getAliases() {
         return List.of();
     }

@@ -1,5 +1,6 @@
 package grimorio.t20;
 
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import grimorio.t20.database.IDatabaseGerenciar;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -11,7 +12,11 @@ import org.slf4j.LoggerFactory;
 public class ComandoListener extends ListenerAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ComandoListener.class);
-    private final ComandoGerenciar gerenciador = new ComandoGerenciar();
+    private final ComandoGerenciar gerenciador;
+
+    public ComandoListener(EventWaiter waiter) {
+        this.gerenciador = new ComandoGerenciar(waiter);
+    }
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {

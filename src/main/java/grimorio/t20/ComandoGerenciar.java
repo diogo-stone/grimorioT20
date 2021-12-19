@@ -1,5 +1,6 @@
 package grimorio.t20;
 
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import grimorio.t20.configs.comando.ComandoContext;
 import grimorio.t20.configs.comando.IComando;
 import grimorio.t20.configs.comando.comandos.ComandoAjuda;
@@ -17,10 +18,10 @@ public class ComandoGerenciar {
 
     private final List<IComando> listaComandos = new ArrayList<>();
 
-    ComandoGerenciar() {
+    ComandoGerenciar(EventWaiter waiter) {
         addComando(new ComandoAjuda(this));
         // Outros comandos vão aqui
-        addComando(new ComandoMagia());
+        addComando(new ComandoMagia(waiter));
         // Comandos administrativos
         addComando(new ComandoPrefixo());
         addComando(new ComandoResetDatabaseMagias());

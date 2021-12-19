@@ -16,7 +16,7 @@ import java.util.*;
 public class SQLiteDataSource implements IDatabaseGerenciar {
 
     private final Logger LOGGER = LoggerFactory.getLogger(SQLiteDataSource.class);
-    private final HikariDataSource ds;
+    private HikariDataSource ds;
 
     public SQLiteDataSource() {
         try {
@@ -264,13 +264,9 @@ public class SQLiteDataSource implements IDatabaseGerenciar {
 
         try (final PreparedStatement selectStmt = getConexao()
                 // SQLite
-                .prepareStatement("SELECT m.*, " +
-                        "a.id as aprimoramento_id, " +
-                        "a.custo as aprimoramento_custo, " +
-                        "a.descricao as aprimoramento_descricao, " +
-                        "a.exclusivo as aprimoramento_exclusivo " +
-                        "FROM magia as m LEFT JOIN aprimoramento as a ON m.id = a.id_magia " +
-                        "WHERE m.nome LIKE ?;")) {
+                .prepareStatement("SELECT * " +
+                        "FROM magia " +
+                        "WHERE nome LIKE ? ORDER BY nome LIMIT 5;")) {
 
             selectStmt.setString(1, "%" + nome + "%");
 
@@ -301,29 +297,66 @@ public class SQLiteDataSource implements IDatabaseGerenciar {
                     magia.setComponenteMaterial(rs.getString("componente_material"));
                     magia.setFonte(rs.getString("fonte"));
 
-                    int idApr = rs.getInt("aprimoramento_id");
-                    if (idApr > 0) {
-                        apr = new Aprimoramento();
-                        apr.setIdMagia(id);
-                        apr.setId(idApr);
-                        apr.setCusto(rs.getString("aprimoramento_custo"));
-                        apr.setDescricao(rs.getString("aprimoramento_descricao"));
-                        apr.setExclusivo(rs.getString("aprimoramento_exclusivo"));
-                        magia.addAprimoramento(apr);
-                    }
-
                     mapMagias.put(magia.getId(), magia);
                 }
             }
 
+            if (mapMagias.size() > 0) {
+                String where = " OR id_magia = ?";
+                try (final PreparedStatement selectAprStmt = getConexao()
+                        // SQLite
+                        .prepareStatement(String.format("SELECT * " +
+                                "FROM aprimoramento " +
+                                "WHERE id_magia = ? %s;", where.repeat(mapMagias.size() - 1)))) {
+
+                    int i = 1;
+                    for (Magia magia : mapMagias.values()) {
+                        selectAprStmt.setInt(i++, magia.getId());
+                    }
+
+                    Magia magia = null;
+                    try (final ResultSet rs = selectAprStmt.executeQuery()) {
+                        Aprimoramento apr = null;
+                        while (rs.next()) {
+                            apr = new Aprimoramento();
+                            apr.setIdMagia(rs.getInt("id_magia"));
+                            apr.setId(rs.getInt("id"));
+                            apr.setCusto(rs.getString("custo"));
+                            apr.setDescricao(rs.getString("descricao"));
+                            apr.setExclusivo(rs.getString("exclusivo"));
+
+                            magia = mapMagias.get(apr.getIdMagia());
+                            if (magia != null)
+                                magia.addAprimoramento(apr);
+                        }
+                    }
+                }
+            }
         } catch (SQLException er) {
             er.printStackTrace();
         }
-
         return mapMagias;
     }
 
     private Connection getConexao() throws SQLException {
+        resetConexao();
         return ds.getConnection();
+    }
+
+    private void resetConexao() throws SQLException {
+        if (ds != null) {
+//            LOGGER.info("Finalizando DS");
+            ds.close();
+        }
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl("jdbc:sqlite:database.db");
+        config.setConnectionTestQuery("SELECT 1");
+        config.addDataSourceProperty("cachePrepStmts", "true");
+        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+
+        ds = new HikariDataSource(config);
+
+//        LOGGER.info("DS inicializado " + ds.getMaximumPoolSize());
     }
 }

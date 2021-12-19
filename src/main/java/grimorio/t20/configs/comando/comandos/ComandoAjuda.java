@@ -36,11 +36,8 @@ public class ComandoAjuda implements IComando {
             StringBuilder builder = new StringBuilder();
             String prefixo = VeryBadDesign.PREFIXES.get(context.getGuild().getIdLong());
 
-            gerenciador.getListaComandos().stream().map(IComando::getNome).forEach(
-                    (it) -> builder.append("```")
-                                    .append(prefixo)
-                                    .append(it)
-                                    .append("```")
+            gerenciador.getListaComandos().stream().map(IComando::getResumoComando).forEach(
+                    (it) -> builder.append(String.format(it,prefixo))
             );
 
             eb.setTitle("Lista de Comandos").setDescription(builder.toString());
@@ -74,6 +71,12 @@ public class ComandoAjuda implements IComando {
         return "_Exibe a lista de rituais e segredos arcanos que eu conheço._\n\n" +
                 "(exibe a lista de comandos ou mais informações sobre um comando informado)\n" +
                 "Uso: `%s"+NOME+" [comando]`";
+    }
+
+    @Override
+    public String getResumoComando() {
+        return "\n`%s" + NOME + " [comando]`\nExibe o detalhamento do comando informado ou essa ajuda, caso nenhum " +
+                "comando seja informado.\n";
     }
 
     @Override
