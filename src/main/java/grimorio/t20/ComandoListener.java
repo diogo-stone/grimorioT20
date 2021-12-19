@@ -1,7 +1,6 @@
 package grimorio.t20;
 
-import grimorio.t20.configs.Config;
-import me.duncte123.botcommons.BotCommons;
+import grimorio.t20.database.IDatabaseGerenciar;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -14,7 +13,6 @@ public class ComandoListener extends ListenerAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(ComandoListener.class);
     private final ComandoGerenciar gerenciador = new ComandoGerenciar();
 
-
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         User user = event.getAuthor();
@@ -23,11 +21,13 @@ public class ComandoListener extends ListenerAdapter {
             return;
         }
 
-        String prefix = Config.get("prefixo");
+        final long guildId = event.getGuild().getIdLong();
+        String prefixo = VeryBadDesign.PREFIXES.computeIfAbsent(guildId, IDatabaseGerenciar.INSTANCE::getPrefixo);
         String raw = event.getMessage().getContentRaw();
 
-        if (raw.startsWith(prefix)) {
-            gerenciador.gerenciar(event);
+        if (raw.startsWith(prefixo)) {
+            gerenciador.gerenciar(event, prefixo);
         }
     }
+
 }

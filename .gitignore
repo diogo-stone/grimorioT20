@@ -5,3 +5,4 @@
 /.idea/
 /out/
 .env
+database.db
