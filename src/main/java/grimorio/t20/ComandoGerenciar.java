@@ -3,6 +3,7 @@ package grimorio.t20;
 import grimorio.t20.configs.comando.ComandoContext;
 import grimorio.t20.configs.comando.IComando;
 import grimorio.t20.configs.comando.comandos.ComandoAjuda;
+import grimorio.t20.configs.comando.comandos.ComandoMagia;
 import grimorio.t20.configs.comando.comandos.admin.ComandoPrefixo;
 import grimorio.t20.configs.comando.comandos.admin.ComandoResetDatabaseMagias;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -19,7 +20,7 @@ public class ComandoGerenciar {
     ComandoGerenciar() {
         addComando(new ComandoAjuda(this));
         // Outros comandos vão aqui
-
+        addComando(new ComandoMagia());
         // Comandos administrativos
         addComando(new ComandoPrefixo());
         addComando(new ComandoResetDatabaseMagias());

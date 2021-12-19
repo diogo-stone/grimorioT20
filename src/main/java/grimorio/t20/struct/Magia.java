@@ -161,6 +161,50 @@ public class Magia {
 		listaAprimoramentos.add(apr);
 	}
 
+	public String getTipoMagia() {
+		if (isArcana() && isDivina())
+			return "Universal";
+		if (isArcana())
+			return "Arcana";
+		return "Divina";
+	}
+
+	public String getDescricaoFormatada() {
+		String desc = "_" + getTipoMagia() + " "+getNivel()+" ("+getEscola()+")_\n\n" +
+				"**Execução**: " + getExecucao() + "; **Alcance**: "+getAlcance() +
+				"%s" + // Alvo, Area e Efeito
+				"%s" + // Duração e Resistência
+				"\n" + getDescricao() + "\n" +
+				"%s" + // Componente Material
+				"%s";  // Aprimoramentos
+
+		String alvoAreaEfeito = (getAlvo().isEmpty() ?
+				"" : getAlvo().equalsIgnoreCase(getArea()) ?
+					"**Alvo ou Área**: " + getAlvo() + "; " : "**Alvo**: " + getAlvo() + "; ") +
+				(getArea().isEmpty() ?
+						"" : getArea().equalsIgnoreCase(getAlvo()) ?
+							"" : "**Área**: " + getArea() + "; ") +
+				(getEfeito().isEmpty() ?
+						"" : "**Efeito**: " + getEfeito() + "; ");
+		alvoAreaEfeito = alvoAreaEfeito.isEmpty() ? "" : "\n" + alvoAreaEfeito;
+
+		String duracaoResistencia = (getDuracao().isEmpty() ?
+				"" : "**Duração**: " + getDuracao() + "; ") +
+				(getResistencia().isEmpty() ?
+						"" : "**Resistência**: " + getResistencia() + "; ");
+		duracaoResistencia = duracaoResistencia.isEmpty() ? "" : "\n" + duracaoResistencia + "\n";
+
+		String componenteMaterial = getComponenteMaterial().isEmpty() ?
+				"" : "\n_Componente Material_: " + getComponenteMaterial() + "\n";
+
+		String aprimoramentos = "";
+		for (Aprimoramento apr: getListaAprimoramentos()) {
+			aprimoramentos += "\n" + apr.getDescricaoFormatada();
+		}
+
+		return String.format(desc, alvoAreaEfeito, duracaoResistencia,componenteMaterial, aprimoramentos);
+	}
+
 	public static Magia fromJson(String json) {
 		return new Gson().fromJson(json, Magia.class);
 	}

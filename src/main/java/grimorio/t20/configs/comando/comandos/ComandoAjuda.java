@@ -17,7 +17,7 @@ import java.util.Locale;
 
 public class ComandoAjuda implements IComando {
 
-    public static final String NOME = "help";
+    public static final String NOME = "ajuda";
 
     private final ComandoGerenciar gerenciador;
 
@@ -73,11 +73,11 @@ public class ComandoAjuda implements IComando {
     public String getAjuda() {
         return "_Exibe a lista de rituais e segredos arcanos que eu conheço._\n\n" +
                 "(exibe a lista de comandos ou mais informações sobre um comando informado)\n" +
-                "Uso: `%shelp [comando]`";
+                "Uso: `%s"+NOME+" [comando]`";
     }
 
     @Override
     public List<String> getAliases() {
-        return List.of("cmds", "comandos", "listacomandos");
+        return List.of("cmds", "comandos", "listacomandos", "help");
     }
 }

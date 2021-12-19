@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 public class Aprimoramento {
 	
 	private String descricao, custo, exclusivo;
-	private int id;
+	private int id, idMagia;
 	
 	public Aprimoramento() {}
 	
@@ -18,6 +18,10 @@ public class Aprimoramento {
 
 	public int getId() {
 		return id;
+	}
+
+	public int getIdMagia() {
+		return idMagia;
 	}
 
 	public String getCusto() {
@@ -34,6 +38,10 @@ public class Aprimoramento {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public void setIdMagia(int idMagia) {
+		this.idMagia = idMagia;
 	}
 
 	public void setCusto(String custo) {
@@ -61,12 +69,16 @@ public class Aprimoramento {
 		if (getCusto().isEmpty())
 			return "Truque";
 		
-		String retorno = "+" + getCusto();
+		String retorno = "+" + getCusto() + " PM";
 		
 		if (!getExclusivo().isEmpty())
-			retorno += " " + exclusivo;
+			retorno += " PM " + exclusivo;
 		
 		return retorno;
+	}
+
+	public String getDescricaoFormatada() {
+		return String.format("**%s:** %s", getCustoFormatado(), getDescricao());
 	}
 
 }

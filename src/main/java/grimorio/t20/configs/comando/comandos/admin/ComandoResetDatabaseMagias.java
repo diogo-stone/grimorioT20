@@ -1,6 +1,7 @@
 package grimorio.t20.configs.comando.comandos.admin;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import grimorio.t20.configs.Config;
 import grimorio.t20.configs.comando.ComandoContext;
@@ -14,6 +15,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,7 +56,7 @@ public class ComandoResetDatabaseMagias implements IComando {
         try {
             BufferedReader json = new BufferedReader(new InputStreamReader(new FileInputStream("raw/magias.json")));
             listaMagias = new Gson().fromJson(json, new TypeToken<List<Magia>>(){}.getType());
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -63,25 +65,29 @@ public class ComandoResetDatabaseMagias implements IComando {
                     Padroes.getMensagemErro(
                             "Não entendi",
                             "_Perdoe-me grande Arquimago das Pedras, mas eu não consegui compreender " +
-                                    "o conheicmento que trouxeste até mim.\n\n" +
+                                    "o conheicmento que trouxeste até mim._\n\n" +
                                     "(o banco de dados de magias **não** foi atualizado. O arquivo estava incorreto)"
                     ).build()
             ).queue();
             return;
         }
 
+        ArrayList<Aprimoramento> listaAprimoramentos = new ArrayList<>();
         int id = 1;
         int idApr = 1;
         for (Magia magia : listaMagias) {
             magia.setId(id);
-            IDatabaseGerenciar.INSTANCE.addMagia(magia);
             for (Aprimoramento apr : magia.getListaAprimoramentos()) {
+                apr.setIdMagia(id);
                 apr.setId(idApr);
-                IDatabaseGerenciar.INSTANCE.addAprimoramento(magia.getId(), apr);
+                listaAprimoramentos.add(apr);
                 idApr++;
             }
             id++;
         }
+
+        IDatabaseGerenciar.INSTANCE.addListaMagias(listaMagias);
+        IDatabaseGerenciar.INSTANCE.addListaAprimoramentos(listaAprimoramentos);
 
         canal.sendMessageEmbeds(
                 Padroes.getMensagemSucesso(

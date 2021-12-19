@@ -40,4 +40,14 @@ public class Padroes {
                 .setDescription(descricao);
     }
 
+    public static EmbedBuilder getMensagemMagia(Magia magia) {
+        return new EmbedBuilder()
+                .setColor(magia.getTipoMagia().equalsIgnoreCase("universal") ?
+                        COR_MAGIA_UNIVERSAL : (magia.getTipoMagia().equalsIgnoreCase("arcana") ?
+                            COR_MAGIA_ARCANA : COR_MAGIA_DIVINA))
+                .setTitle(magia.getNome())
+                .setFooter(magia.getFonte())
+                .setDescription(magia.getDescricaoFormatada());
+    }
+
 }
