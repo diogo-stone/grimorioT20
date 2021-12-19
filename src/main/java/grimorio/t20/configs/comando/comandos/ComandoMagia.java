@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class ComandoMagia implements IComando {
-
+//
     public static final String NOME = "magia";
     private final EventWaiter waiter;
 
