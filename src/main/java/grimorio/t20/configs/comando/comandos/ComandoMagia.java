@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ComandoMagia implements IComando {
 //
-    public static final String NOME = "magia";
+    public static final String NOME = "Magia";
     private final EventWaiter waiter;
 
     public ComandoMagia(EventWaiter waiter) {
@@ -81,12 +81,12 @@ public class ComandoMagia implements IComando {
                                                 Padroes.getMensagemMagia(magia).build()
                                         ).queue();
                                     else
-                                        enviaMensagemOpcaoNaoExiste(canal);
+                                        canal.sendMessageEmbeds(Padroes.getMensagemOpcaoNaoExiste().build()).queue();
                                 } else {
-                                    enviaMensagemOpcaoNaoExiste(canal);
+                                    canal.sendMessageEmbeds(Padroes.getMensagemOpcaoNaoExiste().build()).queue();
                                 }
                             } else {
-                                enviaMensagemOpcaoNaoExiste(canal);
+                                canal.sendMessageEmbeds(Padroes.getMensagemOpcaoNaoExiste().build()).queue();
                             }
                         },
                         5L, TimeUnit.SECONDS,
@@ -103,8 +103,6 @@ public class ComandoMagia implements IComando {
                         }
                 );
             }));
-
-        String s = "";
     }
 
     @Override
@@ -116,30 +114,25 @@ public class ComandoMagia implements IComando {
     public String getAjuda() {
         return "_Vamos, mortal. Diga-me qual feitiço procuras e eu lhe enaltecerei com conheicmento._\n\n" +
                 "(consulta uma magia)\n" +
-                "Uso: `%s"+NOME+" <parte_do_nome_da_magia>`\n" +
+                "Uso: `%s"+NOME.toLowerCase()+" <parte_do_nome_da_magia>`\n" +
+                (getAliasesToString().length() > 0 ? "Tente também: " + getAliasesToString() + "\n" : "") +
                 "_Dica_: não é preciso colocar aspas para nomes que contenham espaços.";
     }
 
     @Override
     public String getResumoComando() {
-        return "\n`%s" + NOME + " <parte_do_nome_da_magia>`\nConsulta a magia informada, retornando as informações " +
+        return "\n`%s" + NOME.toLowerCase() + " <parte_do_nome_da_magia>`\nConsulta a magia informada, retornando as informações " +
                 "dela ou uma lista de seleção com base no nome informado.\n";
     }
 
     @Override
-    public List<String> getAliases() {
-        return List.of("m", "ma", "feitico", "feitiço");
+    public boolean isAdministrativo() {
+        return false;
     }
 
-    private void enviaMensagemOpcaoNaoExiste(TextChannel canal) {
-        canal.sendMessageEmbeds(
-                Padroes.getMensagemErro(
-                        "Que infortúnio",
-                        "_Essa opção não existe, mortal.\nVolte quando souber " +
-                                "o que procuras.\n\n" +
-                                "(você não informou um valor válido)_"
-                ).build()
-        ).queue();
+    @Override
+    public List<String> getAliases() {
+        return List.of("m", "ma", "mag");
     }
 
 }

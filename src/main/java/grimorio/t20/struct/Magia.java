@@ -174,7 +174,7 @@ public class Magia {
 				"**Execução**: " + getExecucao() + "; **Alcance**: "+getAlcance() +
 				"%s" + // Alvo, Area e Efeito
 				"%s" + // Duração e Resistência
-				"\n" + getDescricao() + "\n" +
+				"\n" + getDescricao().replace("%", "%%") + "\n" +
 				"%s" + // Componente Material
 				"%s";  // Aprimoramentos
 
@@ -202,7 +202,7 @@ public class Magia {
 			aprimoramentos += "\n" + apr.getDescricaoFormatada();
 		}
 
-		return String.format(desc, alvoAreaEfeito, duracaoResistencia,componenteMaterial, aprimoramentos);
+		return String.format(desc, alvoAreaEfeito, duracaoResistencia,componenteMaterial, aprimoramentos).replace("%%", "%");
 	}
 
 	public static Magia fromJson(String json) {

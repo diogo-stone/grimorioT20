@@ -26,6 +26,9 @@ public class ComandoListener extends ListenerAdapter {
             return;
         }
 
+        if (!event.isFromGuild())
+            return;
+
         final long guildId = event.getGuild().getIdLong();
         String prefixo = VeryBadDesign.PREFIXES.computeIfAbsent(guildId, IDatabaseGerenciar.INSTANCE::getPrefixo);
         String raw = event.getMessage().getContentRaw();
@@ -33,6 +36,7 @@ public class ComandoListener extends ListenerAdapter {
         if (raw.startsWith(prefixo)) {
             gerenciador.gerenciar(event, prefixo);
         }
+
     }
 
 }

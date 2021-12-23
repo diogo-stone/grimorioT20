@@ -8,8 +8,11 @@ import grimorio.t20.configs.comando.IComando;
 import grimorio.t20.database.IDatabaseGerenciar;
 import grimorio.t20.struct.Padroes;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 
 import java.awt.*;
 import java.util.List;
@@ -17,7 +20,7 @@ import java.util.Locale;
 
 public class ComandoAjuda implements IComando {
 
-    public static final String NOME = "ajuda";
+    public static final String NOME = "Ajuda";
 
     private final ComandoGerenciar gerenciador;
 
@@ -29,6 +32,7 @@ public class ComandoAjuda implements IComando {
     public void gerenciar(ComandoContext context) {
         List<String> args = context.getArgs();
         TextChannel canal = context.getChannel();
+        Member member = context.getMember();
 
         EmbedBuilder eb = Padroes.getMensagemAjuda("T", "");
 
@@ -36,8 +40,14 @@ public class ComandoAjuda implements IComando {
             StringBuilder builder = new StringBuilder();
             String prefixo = VeryBadDesign.PREFIXES.get(context.getGuild().getIdLong());
 
-            gerenciador.getListaComandos().stream().map(IComando::getResumoComando).forEach(
-                    (it) -> builder.append(String.format(it,prefixo))
+            gerenciador.getListaComandos()/*.map(IComando::getResumoComando)*/.forEach(
+                    (it) -> {
+                        if ((it.isAdministrativo() && member.hasPermission(Permission.MANAGE_SERVER)) ||
+                            !it.isAdministrativo())
+                            builder.append(String.format(it.getResumoComando(),prefixo));
+                            if (it.isAdministrativo())
+                                builder.append("**Comando administrativo**\n");
+                    }
             );
 
             eb.setTitle("Lista de Comandos").setDescription(builder.toString());
@@ -55,7 +65,7 @@ public class ComandoAjuda implements IComando {
                         "(comando `%s` não encontrado)", consulta));
         } else {
             eb.setTitle(cmd.getNome())
-                    .setDescription(String.format(cmd.getAjuda(), IDatabaseGerenciar.INSTANCE.getPrefixo(context.getGuild().getIdLong())));
+                    .setDescription(cmd.getAjuda().replace("%s", IDatabaseGerenciar.INSTANCE.getPrefixo(context.getGuild().getIdLong())));
         }
 
         canal.sendMessageEmbeds(eb.build()).queue();
@@ -70,17 +80,23 @@ public class ComandoAjuda implements IComando {
     public String getAjuda() {
         return "_Exibe a lista de rituais e segredos arcanos que eu conheço._\n\n" +
                 "(exibe a lista de comandos ou mais informações sobre um comando informado)\n" +
-                "Uso: `%s"+NOME+" [comando]`";
+                "Uso: `%s"+NOME.toLowerCase()+" [comando]`\n" +
+                (getAliasesToString().length() > 0 ? "Tente também: " + getAliasesToString() : "");
+    }
+
+    @Override
+    public boolean isAdministrativo() {
+        return false;
     }
 
     @Override
     public String getResumoComando() {
-        return "\n`%s" + NOME + " [comando]`\nExibe o detalhamento do comando informado ou essa ajuda, caso nenhum " +
+        return "\n`%s" + NOME.toLowerCase() + " [comando]`\nExibe o detalhamento do comando informado ou essa ajuda, caso nenhum " +
                 "comando seja informado.\n";
     }
 
     @Override
     public List<String> getAliases() {
-        return List.of("cmds", "comandos", "listacomandos", "help");
+        return List.of("cmd", "cmds", "comandos", "help");
     }
 }

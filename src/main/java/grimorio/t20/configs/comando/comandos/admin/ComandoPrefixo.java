@@ -61,12 +61,18 @@ public class ComandoPrefixo implements IComando {
         long guildId =0;
         return "_Este ritual permite definir minha sequência arcana de ativação._\n\n" +
                 "(define o prefixo do bot no servidor)\n" +
-                "Uso: `%s"+NOME+" <novo_prefixo>`";
+                "Uso: `%s"+NOME.toLowerCase()+" <novo_prefixo>`\n" +
+                (getAliasesToString().length() > 0 ? "Tente também: " + getAliasesToString() : "");
     }
 
     @Override
     public String getResumoComando() {
-        return "\n`%s" + NOME + " <novo_prefixo>`\nDefine o prefixo do bot no servidor.\n";
+        return "\n`%s" + NOME.toLowerCase() + " <novo_prefixo>`\nDefine o prefixo do bot no servidor.\n";
+    }
+
+    @Override
+    public boolean isAdministrativo() {
+        return true;
     }
 
     @Override

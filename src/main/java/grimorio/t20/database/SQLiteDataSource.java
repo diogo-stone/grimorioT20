@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import grimorio.t20.configs.Config;
 import grimorio.t20.struct.Aprimoramento;
+import grimorio.t20.struct.Condicao;
 import grimorio.t20.struct.Magia;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,14 @@ public class SQLiteDataSource implements IDatabaseGerenciar {
                     "prefixo VARCHAR(255) NOT NULL DEFAULT '" + prefixoPadrao + "'" +
                     ");");
 
+            statement.execute("CREATE TABLE IF NOT EXISTS condicao (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "nome VARCHAR(255) NOT NULL," +
+                    "tipo VARCHAR(255) NOT NULL," +
+                    "descricao TEXT NOT NULL," +
+                    "fonte VARCHAR(255) NOT NULL" +
+                    ");");
+
             statement.execute("CREATE TABLE IF NOT EXISTS magia (" +
                     "id INTEGER PRIMARY KEY," +
                     "nome VARCHAR(255) NOT NULL," +
@@ -68,11 +77,12 @@ public class SQLiteDataSource implements IDatabaseGerenciar {
                     ");");
 
             statement.execute("CREATE TABLE IF NOT EXISTS aprimoramento (" +
-                    "id INTEGER PRIMARY KEY," +
                     "id_magia INTEGER NOT NULL," +
+                    "id INTEGER NOT NULL," +
                     "custo VARCHAR(255) NOT NULL," +
                     "descricao TEXT NOT NULL," +
                     "exclusivo VARCHAR(255) NOT NULL," +
+                    "PRIMARY KEY (id_magia, id)," +
                     "FOREIGN KEY (id_magia) REFERENCES magia(id)" +
                     ");");
         } catch(SQLException er) {
@@ -266,9 +276,9 @@ public class SQLiteDataSource implements IDatabaseGerenciar {
                 // SQLite
                 .prepareStatement("SELECT * " +
                         "FROM magia " +
-                        "WHERE nome LIKE ? ORDER BY nome LIMIT 5;")) {
+                        "WHERE lower(nome) GLOB ? ORDER BY nome LIMIT 5;")) {
 
-            selectStmt.setString(1, "%" + nome + "%");
+            selectStmt.setString(1, "*" + textoBuscaSemAcentos(nome) + "*");
 
             try (final ResultSet rs = selectStmt.executeQuery()) {
                 Magia magia = null;
@@ -336,6 +346,92 @@ public class SQLiteDataSource implements IDatabaseGerenciar {
             er.printStackTrace();
         }
         return mapMagias;
+    }
+
+    @Override
+    public void addListaCondicao(ArrayList<Condicao> listaCondicoes) {
+        if (listaCondicoes == null)
+            return;
+
+        if (listaCondicoes.size() <= 0)
+            return;
+
+        String values = "(?, ?, ?, ?, ?),";
+        try (final PreparedStatement insertStatement = getConexao()
+                // SQLite
+                .prepareStatement(String.format("INSERT OR REPLACE INTO condicao(id, nome, tipo, descricao, fonte) " +
+                        "VALUES %s (?, ?, ?, ?, ?);", values.repeat(listaCondicoes.size()-1)))) {
+
+            int i = 1;
+
+            for (Condicao condicao: listaCondicoes) {
+
+                LOGGER.info(String.format("Condicao %d: %s", condicao.getId(), condicao.getNome()));
+
+                insertStatement.setInt(i++, condicao.getId());
+                insertStatement.setString(i++, condicao.getNome());
+                insertStatement.setString(i++, condicao.getTipo());
+                insertStatement.setString(i++, condicao.getDescricao());
+                insertStatement.setString(i++, condicao.getFonte());
+            }
+
+            insertStatement.execute();
+
+        } catch (SQLException er) {
+            er.printStackTrace();
+        }
+    }
+
+    @Override
+    public Map<Integer, Condicao> consultaCondicao(String nome) {
+        Map<Integer, Condicao> mapCondicoes = new HashMap<>();
+
+        if (nome == null)
+            return mapCondicoes;
+
+        try (final PreparedStatement selectStmt = getConexao()
+                // SQLite
+                .prepareStatement("SELECT * " +
+                        "FROM condicao " +
+                        "WHERE lower(nome) GLOB ? or lower(tipo) GLOB ? ORDER BY nome LIMIT 5;")) {
+
+            selectStmt.setString(1, "*" + textoBuscaSemAcentos(nome) + "*");
+            selectStmt.setString(2, "*" + textoBuscaSemAcentos(nome) + "*");
+
+            try (final ResultSet rs = selectStmt.executeQuery()) {
+                Condicao condicao = null;
+
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+
+                    condicao = mapCondicoes.get(id);
+                    if (condicao == null)
+                        condicao = new Condicao();
+
+                    condicao.setId(id);
+                    condicao.setNome(rs.getString("nome"));
+                    condicao.setDescricao(rs.getString("descricao"));
+                    condicao.setTipo(rs.getString("tipo"));
+                    condicao.setFonte(rs.getString("fonte"));
+
+                    mapCondicoes.put(condicao.getId(), condicao);
+                }
+            }
+        } catch (SQLException er) {
+            er.printStackTrace();
+        }
+        return mapCondicoes;
+    }
+
+    private String textoBuscaSemAcentos(String texto) {
+        return texto.toLowerCase()
+                .replaceAll("[a·‡‰‚„A¡¿ƒ¬√]", "\\[a·‡‰‚„A¡¿ƒ¬√\\]")
+                .replaceAll("[eÈËÎÍE…»À ]", "\\[eÈËÎÍE…»À \\]")
+                .replaceAll("[iÌÏÓIÕÃŒ]", "\\[iÌÏÓIÕÃŒ\\]")
+                .replaceAll("[oÛÚˆÙıO”“÷‘’]", "\\[oÛÚˆÙıO”“÷‘’\\]")
+                .replaceAll("[u˙˘¸˚U⁄Ÿ‹€]", "\\[u˙˘¸˚U⁄Ÿ‹€\\]")
+                .replace("*", "[*]")
+                .replace("?", "[?]");
     }
 
     private Connection getConexao() throws SQLException {

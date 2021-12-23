@@ -12,8 +12,16 @@ public interface IComando {
 
     String getResumoComando();
 
+    boolean isAdministrativo();
+
     default List<String> getAliases() {
         return List.of();
+    }
+
+    default String getAliasesToString() {
+        StringBuilder builder = new StringBuilder("");
+        getAliases().forEach((it) -> { builder.append("`%s").append(it).append("` "); });
+        return builder.toString();
     }
 
 }

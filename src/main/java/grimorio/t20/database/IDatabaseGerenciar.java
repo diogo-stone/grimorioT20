@@ -1,6 +1,7 @@
 package grimorio.t20.database;
 
 import grimorio.t20.struct.Aprimoramento;
+import grimorio.t20.struct.Condicao;
 import grimorio.t20.struct.Magia;
 
 import java.util.ArrayList;
@@ -22,4 +23,8 @@ public interface IDatabaseGerenciar {
     void addListaAprimoramentos(ArrayList<Aprimoramento> listaAprimoramentos);
 
     Map<Integer, Magia> consultaMagia(String nome);
+
+    // Condições
+    void addListaCondicao(ArrayList<Condicao> listaCondicoes);
+    Map<Integer, Condicao> consultaCondicao(String nome);
 }
