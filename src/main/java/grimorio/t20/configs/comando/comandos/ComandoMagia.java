@@ -34,10 +34,10 @@ public class ComandoMagia implements IComando {
         if (mapMagias.size() <= 0) {
             canal.sendMessageEmbeds(
                     Padroes.getMensagemErro(
-                            "Magia nÃ£o encontrada",
-                            String.format("_Meu acervo nÃ£o dispÃµe de nenhum feitiÃ§o similar a `%s`.\n" +
-                                    "Tem certeza que Ã© isso que buscavas?_\n\n" +
-                                    "(nÃ£o foi possÃ­vel encontrar uma magia que contenha `%s` em seu nome)"
+                            "Magia não encontrada",
+                            String.format("_Meu acervo não dispõe de nenhum feitiço similar a `%s`.\n" +
+                                    "Tem certeza que é isso que buscavas?_\n\n" +
+                                    "(não foi possível encontrar uma magia que contenha `%s` em seu nome)"
                             , consultaMagia, consultaMagia)
                     ).build()
             ).queue();
@@ -61,7 +61,7 @@ public class ComandoMagia implements IComando {
         canal.sendMessageEmbeds(
                 Padroes.getMensagemSucesso(
                     "Escolha uma magia",
-                    String.format("Sua consulta ao acervo retornou muitos resultados.\nDigite o nÃºmero referente a magia " +
+                    String.format("Sua consulta ao acervo retornou muitos resultados.\nDigite o número referente a magia " +
                             "que desejas verificar.\n%s", magias))
                 .build())
             .queue((message -> {
@@ -94,10 +94,10 @@ public class ComandoMagia implements IComando {
                             message.delete().queue();
                             canal.sendMessageEmbeds(
                                     Padroes.getMensagemErro(
-                                            "Que infortÃºnio",
-                                            "_Eu nÃ£o tenho todo tempo do mundo, mortal.\nVolte quando souber " +
+                                            "Que infortúnio",
+                                            "_Eu não tenho todo tempo do mundo, mortal.\nVolte quando souber " +
                                                     "o que procuras.\n\n" +
-                                                    "(vocÃª nÃ£o selecionou uma magia da lista)_"
+                                                    "(você não selecionou uma magia da lista)_"
                                     ).build()
                             ).queue();
                         }
@@ -112,17 +112,17 @@ public class ComandoMagia implements IComando {
 
     @Override
     public String getAjuda() {
-        return "_Vamos, mortal. Diga-me qual feitiÃ§o procuras e eu lhe enaltecerei com conheicmento._\n\n" +
+        return "_Vamos, mortal. Diga-me qual feitiço procuras e eu lhe enaltecerei com conheicmento._\n\n" +
                 "(consulta uma magia)\n" +
                 "Uso: `%s"+NOME.toLowerCase()+" <parte_do_nome_da_magia>`\n" +
-                (getAliasesToString().length() > 0 ? "Tente tambÃ©m: " + getAliasesToString() + "\n" : "") +
-                "_Dica_: nÃ£o Ã© preciso colocar aspas para nomes que contenham espaÃ§os.";
+                (getAliasesToString().length() > 0 ? "Tente também: " + getAliasesToString() + "\n" : "") +
+                "_Dica_: não é preciso colocar aspas para nomes que contenham espaços.";
     }
 
     @Override
     public String getResumoComando() {
-        return "\n`%s" + NOME.toLowerCase() + " <parte_do_nome_da_magia>`\nConsulta a magia informada, retornando as informaÃ§Ãµes " +
-                "dela ou uma lista de seleÃ§Ã£o com base no nome informado.\n";
+        return "\n`%s" + NOME.toLowerCase() + " <parte_do_nome_da_magia>`\nConsulta a magia informada, retornando as informações " +
+                "dela ou uma lista de seleção com base no nome informado.\n";
     }
 
     @Override
