@@ -27,15 +27,11 @@ public class PostgresDataSource implements IDatabaseGerenciar {
 
     public PostgresDataSource() {
         try {
-            Class.forName("org.postgresql.Driver");
             resetConexao();
             LOGGER.info("Database criado.");
         } catch (SQLException e) {
             e.printStackTrace();
             LOGGER.info("Não foi possível criar o arquivo do Database.");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            LOGGER.info("Classe do driver não encontrada.");
         }
 
         try (final Statement statement = getConexao().createStatement()) {
@@ -515,8 +511,15 @@ public class PostgresDataSource implements IDatabaseGerenciar {
 
         String username = dbUri.getUserInfo().split(":")[0];
         String password = dbUri.getUserInfo().split(":")[1];
-        String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
+        String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath() + "?sslmode=require";
 
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            LOGGER.error("Classe do driver Postgres não encontrado.");
+            return;
+        }
         conexao = DriverManager.getConnection(dbUrl, username, password);
 
 //        HikariConfig config = new HikariConfig();

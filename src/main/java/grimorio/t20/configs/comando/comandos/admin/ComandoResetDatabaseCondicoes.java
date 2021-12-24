@@ -16,6 +16,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class ComandoResetDatabaseCondicoes implements IComando {
         ArrayList<Condicao> listaCondicoes = null;
 
         try {
-            BufferedReader json = new BufferedReader(new InputStreamReader(new FileInputStream("raw/condicoes.json")));
+            BufferedReader json = new BufferedReader(new InputStreamReader(new FileInputStream("raw/condicoes.json"), StandardCharsets.ISO_8859_1));
             listaCondicoes = new Gson().fromJson(json, new TypeToken<List<Condicao>>(){}.getType());
             json.close();
         } catch (Exception e) {

@@ -12,6 +12,8 @@ import grimorio.t20.configs.comando.comandos.admin.ComandoResetDatabaseMagias;
 import me.duncte123.botcommons.StringUtils;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jsoup.helper.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +24,8 @@ import java.util.regex.Pattern;
 public class ComandoGerenciar {
 
     private final List<IComando> listaComandos = new ArrayList<>();
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComandoGerenciar.class);
 
     ComandoGerenciar(EventWaiter waiter) {
         addComando(new ComandoAjuda(this));
@@ -62,6 +66,7 @@ public class ComandoGerenciar {
         String split[] = event.getMessage().getContentRaw()
             .replaceFirst("(?i)" + Pattern.quote(prefixo), "")
             .split("\\s+");
+
         String nomeComando = split[0].toLowerCase();
 
         IComando cmd = this.getComando(nomeComando);
