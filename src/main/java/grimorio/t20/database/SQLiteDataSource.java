@@ -430,6 +430,7 @@ public class SQLiteDataSource implements IDatabaseGerenciar {
                 .replaceAll("[iíìîIÍÌÎ]", "\\[iíìîIÍÌÎ\\]")
                 .replaceAll("[oóòöôõOÓÒÖÔÕ]", "\\[oóòöôõOÓÒÖÔÕ\\]")
                 .replaceAll("[uúùüûUÚÙÜÛ]", "\\[uúùüûUÚÙÜÛ\\]")
+                .replaceAll("[cçCÇ]", "\\[cçCÇ\\]")
                 .replace("*", "[*]")
                 .replace("?", "[?]");
     }

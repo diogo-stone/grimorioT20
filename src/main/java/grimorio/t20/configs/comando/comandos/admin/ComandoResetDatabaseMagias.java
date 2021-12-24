@@ -59,6 +59,7 @@ public class ComandoResetDatabaseMagias implements IComando {
         try {
             BufferedReader json = new BufferedReader(new InputStreamReader(new FileInputStream("raw/magias.json")));
             listaMagias = new Gson().fromJson(json, new TypeToken<List<Magia>>(){}.getType());
+            json.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

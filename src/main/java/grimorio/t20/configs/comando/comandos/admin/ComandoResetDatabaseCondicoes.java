@@ -55,6 +55,7 @@ public class ComandoResetDatabaseCondicoes implements IComando {
         try {
             BufferedReader json = new BufferedReader(new InputStreamReader(new FileInputStream("raw/condicoes.json")));
             listaCondicoes = new Gson().fromJson(json, new TypeToken<List<Condicao>>(){}.getType());
+            json.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+}
+
+group 'com.diogostone'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://jcenter.bintray.com/"
+    }
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+    // https://mvnrepository.com/artifact/net.dv8tion/JDA
+    implementation 'net.dv8tion:JDA:5.0.0-alpha.2'
+    // https://mvnrepository.com/artifact/com.google.code.gson/gson
+    implementation 'com.google.code.gson:gson:2.8.9'
+    // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
+    implementation 'ch.qos.logback:logback-classic:1.2.9'
+    implementation 'io.github.cdimascio:dotenv-java:2.2.0'
+    // https://mvnrepository.com/artifact/me.duncte123/botCommons
+    implementation 'me.duncte123:botCommons:1.0.78'
+
+    // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
+    implementation group: 'com.zaxxer', name: 'HikariCP', version: '5.0.0'
+    // https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc
+    implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.36.0.3'
+    // https://mvnrepository.com/artifact/com.jagrosh/jda-utilities
+    implementation 'com.jagrosh:jda-utilities:3.0.5'
+    // https://mvnrepository.com/artifact/mysql/mysql-connector-java
+    implementation 'mysql:mysql-connector-java:8.0.27'
+
+
+}
+
+test {
+    useJUnitPlatform()
+}
