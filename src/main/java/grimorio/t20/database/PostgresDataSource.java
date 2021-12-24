@@ -27,11 +27,15 @@ public class PostgresDataSource implements IDatabaseGerenciar {
 
     public PostgresDataSource() {
         try {
+            Class.forName("org.postgresql.Driver");
             resetConexao();
             LOGGER.info("Database criado.");
         } catch (SQLException e) {
             e.printStackTrace();
             LOGGER.info("Não foi possível criar o arquivo do Database.");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            LOGGER.info("Classe do driver não encontrada.");
         }
 
         try (final Statement statement = getConexao().createStatement()) {
