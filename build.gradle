@@ -6,6 +6,8 @@ plugins {
 group 'com.diogostone'
 version '1.0-SNAPSHOT'
 
+compileJava.options.encoding = "windows-1252"
+
 repositories {
     mavenCentral()
     maven {
