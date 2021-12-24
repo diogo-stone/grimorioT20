@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 group 'com.diogostone'
@@ -10,6 +11,10 @@ repositories {
     maven {
         url "https://jcenter.bintray.com/"
     }
+}
+
+test {
+    useJUnitPlatform()
 }
 
 dependencies {
@@ -37,6 +42,12 @@ dependencies {
 
 }
 
-test {
-    useJUnitPlatform()
+task stage(dependsOn: ['build','shadowJar', 'clean', 'test'])
+build.mustRunAfter clean
+build.mustRunAfter test
+
+jar {
+    manifest{
+        attributes 'Class-Path': '/libs/GrimorioT20-1.0-SNAPSHOT-all.jar', 'Main-Class': 'grimorio.t20.Bot'
+    }
 }
