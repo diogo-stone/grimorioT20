@@ -9,7 +9,7 @@ import java.util.Map;
 
 public interface IDatabaseGerenciar {
 
-    IDatabaseGerenciar INSTANCE = new SQLiteDataSource();
+    IDatabaseGerenciar INSTANCE = new PostgresDataSource();
 
     // Prefixo
     String getPrefixo(long guildId);
