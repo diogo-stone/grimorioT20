@@ -31,7 +31,7 @@ dependencies {
     implementation 'me.duncte123:botCommons:1.0.78'
 
     // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
-    implementation group: 'com.zaxxer', name: 'HikariCP', version: '5.0.0'
+    implementation group: 'com.zaxxer', name: 'HikariCP', version: '4.0.3'
     // https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc
     implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.36.0.3'
     // https://mvnrepository.com/artifact/com.jagrosh/jda-utilities
