@@ -11,7 +11,7 @@ public class Bot {
     private Bot() throws LoginException {
         String token = Config.get("token");
         if (token.length() < 1) {
-            System.err.println("Token nÃ£o informado.");
+            System.err.println("Token não informado.");
             return;
         }
         EventWaiter waiter = new EventWaiter();

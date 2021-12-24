@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ComandoCondicao implements IComando {
 
-    public static final String NOME = "CondiÃ§Ã£o";
+    public static final String NOME = "Condição";
     private EventWaiter waiter;
 
     public ComandoCondicao(EventWaiter waiter) { this.waiter = waiter; }
@@ -33,10 +33,10 @@ public class ComandoCondicao implements IComando {
         if (mapCondicoes.size() <= 0) {
             canal.sendMessageEmbeds(
                     Padroes.getMensagemErro(
-                            "CondiÃ§Ã£o nÃ£o encontrada",
-                            String.format("_NÃ£o existe uma consequÃªncia para `%s`.\n" +
+                            "Condição não encontrada",
+                            String.format("_Não existe uma consequência para `%s`.\n" +
                                             "Pare de me atormentar com bobagens._\n\n" +
-                                            "(nÃ£o foi possÃ­vel encontrar uma condiÃ§Ã£o que contenha `%s` em seu nome)"
+                                            "(não foi possível encontrar uma condição que contenha `%s` em seu nome)"
                                     , consultaCondicao, consultaCondicao)
                     ).build()
             ).queue();
@@ -59,9 +59,9 @@ public class ComandoCondicao implements IComando {
 
         canal.sendMessageEmbeds(
                         Padroes.getMensagemSucesso(
-                                        "Escolha uma condiÃ§Ã£o",
-                                        String.format("Sua consulta Ã s efermidades trouxeram muitos resultados.\n" +
-                                                "Digite o nÃºmero referente a condiÃ§Ã£o que desejas verificar.\n" +
+                                        "Escolha uma condição",
+                                        String.format("Sua consulta às efermidades trouxeram muitos resultados.\n" +
+                                                "Digite o número referente a condição que desejas verificar.\n" +
                                                 "%s", condicoes))
                                 .build())
                 .queue((message -> {
@@ -94,10 +94,10 @@ public class ComandoCondicao implements IComando {
                                 message.delete().queue();
                                 canal.sendMessageEmbeds(
                                         Padroes.getMensagemErro(
-                                                "Que infortÃºnio",
-                                                "_Eu nÃ£o tenho todo tempo do mundo, mortal.\nVolte quando souber " +
+                                                "Que infortúnio",
+                                                "_Eu não tenho todo tempo do mundo, mortal.\nVolte quando souber " +
                                                         "o que procuras.\n\n" +
-                                                        "(vocÃª nÃ£o selecionou uma condiÃ§Ã£o da lista)_"
+                                                        "(você não selecionou uma condição da lista)_"
                                         ).build()
                                 ).queue();
                             }
@@ -112,16 +112,16 @@ public class ComandoCondicao implements IComando {
 
     @Override
     public String getAjuda() {
-        return "_Mortais e seus problemas mundanos. Diga-me o que lhe aflige e eu direi as consequÃªncias disso._\n\n" +
-                "(consulta uma condiÃ§Ã£o)\n" +
-                "Uso: `%s"+NOME.toLowerCase()+" <parte_do_nome_da_condiÃ§Ã£o>`\n" +
-                (getAliasesToString().length() > 0 ? "Tente tambÃ©m: " + getAliasesToString() : "");
+        return "_Mortais e seus problemas mundanos. Diga-me o que lhe aflige e eu direi as consequências disso._\n\n" +
+                "(consulta uma condição)\n" +
+                "Uso: `%s"+NOME.toLowerCase()+" <parte_do_nome_da_condição>`\n" +
+                (getAliasesToString().length() > 0 ? "Tente também: " + getAliasesToString() : "");
     }
 
     @Override
     public String getResumoComando() {
-        return "\n`%s" + NOME.toLowerCase() + " <parte_do_nome_da_condiÃ§Ã£o>`\nConsulta a condiÃ§Ã£o informada, retornando " +
-                "as informaÃ§Ãµes dela ou uma lista de seleÃ§Ã£o com base no nome informado.\n";
+        return "\n`%s" + NOME.toLowerCase() + " <parte_do_nome_da_condição>`\nConsulta a condição informada, retornando " +
+                "as informações dela ou uma lista de seleção com base no nome informado.\n";
     }
 
     @Override

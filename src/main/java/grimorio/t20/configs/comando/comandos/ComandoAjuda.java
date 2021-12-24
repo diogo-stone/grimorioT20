@@ -60,9 +60,9 @@ public class ComandoAjuda implements IComando {
         IComando cmd = gerenciador.getComando(consulta);
 
         if (cmd == null) {
-            eb.setTitle("AtÃ© a magia tem limites")
-                .setDescription(String.format("_Este ritual nÃ£o existe._\n\n" +
-                        "(comando `%s` nÃ£o encontrado)", consulta));
+            eb.setTitle("Até a magia tem limites")
+                .setDescription(String.format("_Este ritual não existe._\n\n" +
+                        "(comando `%s` não encontrado)", consulta));
         } else {
             eb.setTitle(cmd.getNome())
                     .setDescription(cmd.getAjuda().replace("%s", IDatabaseGerenciar.INSTANCE.getPrefixo(context.getGuild().getIdLong())));
@@ -78,10 +78,10 @@ public class ComandoAjuda implements IComando {
 
     @Override
     public String getAjuda() {
-        return "_Exibe a lista de rituais e segredos arcanos que eu conheÃ§o._\n\n" +
-                "(exibe a lista de comandos ou mais informaÃ§Ãµes sobre um comando informado)\n" +
+        return "_Exibe a lista de rituais e segredos arcanos que eu conheço._\n\n" +
+                "(exibe a lista de comandos ou mais informações sobre um comando informado)\n" +
                 "Uso: `%s"+NOME.toLowerCase()+" [comando]`\n" +
-                (getAliasesToString().length() > 0 ? "Tente tambÃ©m: " + getAliasesToString() : "");
+                (getAliasesToString().length() > 0 ? "Tente também: " + getAliasesToString() : "");
     }
 
     @Override

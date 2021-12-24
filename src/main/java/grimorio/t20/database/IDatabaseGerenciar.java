@@ -24,7 +24,7 @@ public interface IDatabaseGerenciar {
 
     Map<Integer, Magia> consultaMagia(String nome);
 
-    // CondiÃ§Ãµes
+    // Condições
     void addListaCondicao(ArrayList<Condicao> listaCondicoes);
     Map<Integer, Condicao> consultaCondicao(String nome);
 }
