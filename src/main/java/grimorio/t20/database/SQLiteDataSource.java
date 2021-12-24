@@ -26,7 +26,7 @@ public class SQLiteDataSource implements IDatabaseGerenciar {
                 if (dbFile.createNewFile())
                     LOGGER.info("Database criado.");
                 else
-                    LOGGER.info("Não foi possível criar o arquivo do Database.");
+                    LOGGER.info("NÃ£o foi possÃ­vel criar o arquivo do Database.");
         } catch (IOException er) {
             er.printStackTrace();
         }
@@ -425,12 +425,12 @@ public class SQLiteDataSource implements IDatabaseGerenciar {
 
     private String textoBuscaSemAcentos(String texto) {
         return texto.toLowerCase()
-                .replaceAll("[aáàäâãAÁÀÄÂÃ]", "\\[aáàäâãAÁÀÄÂÃ\\]")
-                .replaceAll("[eéèëêEÉÈËÊ]", "\\[eéèëêEÉÈËÊ\\]")
-                .replaceAll("[iíìîIÍÌÎ]", "\\[iíìîIÍÌÎ\\]")
-                .replaceAll("[oóòöôõOÓÒÖÔÕ]", "\\[oóòöôõOÓÒÖÔÕ\\]")
-                .replaceAll("[uúùüûUÚÙÜÛ]", "\\[uúùüûUÚÙÜÛ\\]")
-                .replaceAll("[cçCÇ]", "\\[cçCÇ\\]")
+                .replaceAll("[aÃ¡Ã Ã¤Ã¢Ã£AÃÃ€Ã„Ã‚Ãƒ]", "\\[aÃ¡Ã Ã¤Ã¢Ã£AÃÃ€Ã„Ã‚Ãƒ\\]")
+                .replaceAll("[eÃ©Ã¨Ã«ÃªEÃ‰ÃˆÃ‹ÃŠ]", "\\[eÃ©Ã¨Ã«ÃªEÃ‰ÃˆÃ‹ÃŠ\\]")
+                .replaceAll("[iÃ­Ã¬Ã®IÃÃŒÃ]", "\\[iÃ­Ã¬Ã®IÃÃŒÃ\\]")
+                .replaceAll("[oÃ³Ã²Ã¶Ã´ÃµOÃ“Ã’Ã–Ã”Ã•]", "\\[oÃ³Ã²Ã¶Ã´ÃµOÃ“Ã’Ã–Ã”Ã•\\]")
+                .replaceAll("[uÃºÃ¹Ã¼Ã»UÃšÃ™ÃœÃ›]", "\\[uÃºÃ¹Ã¼Ã»UÃšÃ™ÃœÃ›\\]")
+                .replaceAll("[cÃ§CÃ‡]", "\\[cÃ§CÃ‡\\]")
                 .replace("*", "[*]")
                 .replace("?", "[?]");
     }

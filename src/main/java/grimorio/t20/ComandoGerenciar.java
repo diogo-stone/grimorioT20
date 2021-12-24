@@ -25,7 +25,7 @@ public class ComandoGerenciar {
 
     ComandoGerenciar(EventWaiter waiter) {
         addComando(new ComandoAjuda(this));
-        // Outros comandos v„o aqui
+        // Outros comandos v√£o aqui
         addComando(new ComandoMagia(waiter));
         addComando(new ComandoCondicao(waiter));
         // Comandos administrativos
@@ -38,7 +38,7 @@ public class ComandoGerenciar {
         boolean jaExiste = this.listaComandos.stream().anyMatch((it) -> it.getNome().equalsIgnoreCase(comando.getNome()));
 
         if (jaExiste)
-            throw new IllegalArgumentException("Esse comando j· existe.");
+            throw new IllegalArgumentException("Esse comando j√° existe.");
 
         listaComandos.add(comando);
 
