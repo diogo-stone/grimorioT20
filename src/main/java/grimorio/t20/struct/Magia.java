@@ -171,27 +171,27 @@ public class Magia {
 
 	public String getDescricaoFormatada() {
 		String desc = "_" + getTipoMagia() + " "+getNivel()+" ("+getEscola()+")_\n\n" +
-				"**ExecuÁ„o**: " + getExecucao() + "; **Alcance**: "+getAlcance() +
+				"**Execu√ß√£o**: " + getExecucao() + "; **Alcance**: "+getAlcance() +
 				"%s" + // Alvo, Area e Efeito
-				"%s" + // DuraÁ„o e ResistÍncia
+				"%s" + // Dura√ß√£o e Resist√™ncia
 				"\n" + getDescricao().replace("%", "%%") + "\n" +
 				"%s" + // Componente Material
 				"%s";  // Aprimoramentos
 
 		String alvoAreaEfeito = (getAlvo().isEmpty() ?
 				"" : getAlvo().equalsIgnoreCase(getArea()) ?
-					"**Alvo ou ¡rea**: " + getAlvo() + "; " : "**Alvo**: " + getAlvo() + "; ") +
+					"**Alvo ou √Årea**: " + getAlvo() + "; " : "**Alvo**: " + getAlvo() + "; ") +
 				(getArea().isEmpty() ?
 						"" : getArea().equalsIgnoreCase(getAlvo()) ?
-							"" : "**¡rea**: " + getArea() + "; ") +
+							"" : "**√Årea**: " + getArea() + "; ") +
 				(getEfeito().isEmpty() ?
 						"" : "**Efeito**: " + getEfeito() + "; ");
 		alvoAreaEfeito = alvoAreaEfeito.isEmpty() ? "" : "\n" + alvoAreaEfeito;
 
 		String duracaoResistencia = (getDuracao().isEmpty() ?
-				"" : "**DuraÁ„o**: " + getDuracao() + "; ") +
+				"" : "**Dura√ß√£o**: " + getDuracao() + "; ") +
 				(getResistencia().isEmpty() ?
-						"" : "**ResistÍncia**: " + getResistencia() + "; ");
+						"" : "**Resist√™ncia**: " + getResistencia() + "; ");
 		duracaoResistencia = duracaoResistencia.isEmpty() ? "" : "\n" + duracaoResistencia + "\n";
 
 		String componenteMaterial = getComponenteMaterial().isEmpty() ?

@@ -62,10 +62,10 @@ public class Padroes {
 
     public static EmbedBuilder getMensagemOpcaoNaoExiste() {
         return Padroes.getMensagemErro(
-                        "Que infortúnio",
-                        "_Essa opção não existe, mortal.\nVolte quando souber " +
+                        "Que infortÃºnio",
+                        "_Essa opÃ§Ã£o nÃ£o existe, mortal.\nVolte quando souber " +
                                 "o que procuras._\n\n" +
-                                "(você não informou um valor válido)"
+                                "(vocÃª nÃ£o informou um valor vÃ¡lido)"
                 );
     }
 

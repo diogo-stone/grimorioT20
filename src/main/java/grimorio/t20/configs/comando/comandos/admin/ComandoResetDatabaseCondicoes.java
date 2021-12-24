@@ -32,10 +32,10 @@ public class ComandoResetDatabaseCondicoes implements IComando {
         if (member.getIdLong() != Long.parseLong(Config.get("owner_id"))) {
             canal.sendMessageEmbeds(
                     Padroes.getMensagemErro(
-                        "Quem você pensa que é?",
-                        "_Você acha que pode me enganar?\n" +
-                                "Você não é o meu mestre, mortal._\n\n" +
-                                "(você não tem permissão para executar esse comando)"
+                        "Quem vocÃª pensa que Ã©?",
+                        "_VocÃª acha que pode me enganar?\n" +
+                                "VocÃª nÃ£o Ã© o meu mestre, mortal._\n\n" +
+                                "(vocÃª nÃ£o tem permissÃ£o para executar esse comando)"
                 ).build()
             ).queue();
             return;
@@ -43,10 +43,10 @@ public class ComandoResetDatabaseCondicoes implements IComando {
         canal.sendMessageEmbeds(
                 Padroes.getMensagemSucesso(
                         "Seja bem-vindo",
-                        "_Que bom ver que você retornou, mestre.\n" +
+                        "_Que bom ver que vocÃª retornou, mestre.\n" +
                                 "Todos esses mortais me cansam com seus problemas e efermidades.\n" +
-                                "Por favor, diga-me que você trouxe conhecimento novo._\n\n" +
-                                "(o banco de dados de condições está sendo atualizado. Isso pode levar algum tempo, aguardem)"
+                                "Por favor, diga-me que vocÃª trouxe conhecimento novo._\n\n" +
+                                "(o banco de dados de condiÃ§Ãµes estÃ¡ sendo atualizado. Isso pode levar algum tempo, aguardem)"
                 ).build()
         ).queue();
 
@@ -63,10 +63,10 @@ public class ComandoResetDatabaseCondicoes implements IComando {
         if (listaCondicoes == null) {
             canal.sendMessageEmbeds(
                     Padroes.getMensagemErro(
-                            "Não entendi",
-                            "_Perdoe-me grande Arquimago das Pedras, mas eu não consegui compreender " +
-                                    "o conheicmento que trouxeste até mim._\n\n" +
-                                    "(o banco de dados de condições **não** foi atualizado. O arquivo estava incorreto)"
+                            "NÃ£o entendi",
+                            "_Perdoe-me grande Arquimago das Pedras, mas eu nÃ£o consegui compreender " +
+                                    "o conheicmento que trouxeste atÃ© mim._\n\n" +
+                                    "(o banco de dados de condiÃ§Ãµes **nÃ£o** foi atualizado. O arquivo estava incorreto)"
                     ).build()
             ).queue();
             return;
@@ -76,10 +76,10 @@ public class ComandoResetDatabaseCondicoes implements IComando {
 
         canal.sendMessageEmbeds(
                 Padroes.getMensagemSucesso(
-                        "Até breve",
+                        "AtÃ© breve",
                         "_Obigado por me enaltecer com este acervo de efermidades, Arquimago das Pedras.\n" +
                                 "Retorne quando houver mais conhecimento para compartilhar comigo, mestre._\n\n" +
-                                "(o banco de dados de condições foi atualizado com sucesso)"
+                                "(o banco de dados de condiÃ§Ãµes foi atualizado com sucesso)"
                 ).build()
         ).queue();
     }
@@ -91,16 +91,16 @@ public class ComandoResetDatabaseCondicoes implements IComando {
 
     @Override
     public String getAjuda() {
-        return "_Este poderoso ritual só pode ser invocado pelo meu mestre, o grande Arquimago das Pedras.\n" +
-                "Mortais podem apenas fazer perguntas incesantes e rituais pífios._\n\n" +
-                "(atualiza o banco de dados de condições do bot)\n" +
+        return "_Este poderoso ritual sÃ³ pode ser invocado pelo meu mestre, o grande Arquimago das Pedras.\n" +
+                "Mortais podem apenas fazer perguntas incesantes e rituais pÃ­fios._\n\n" +
+                "(atualiza o banco de dados de condiÃ§Ãµes do bot)\n" +
                 "Uso: `%s" + NOME.toLowerCase() + "`\n" +
-                (getAliasesToString().length() > 0 ? "Tente também: " + getAliasesToString() : "");
+                (getAliasesToString().length() > 0 ? "Tente tambÃ©m: " + getAliasesToString() : "");
     }
 
     @Override
     public String getResumoComando() {
-        return "\n`%s" + NOME.toLowerCase() + "`\nReseta o banco de dados de condições e importa todas do arquivo base.\n";
+        return "\n`%s" + NOME.toLowerCase() + "`\nReseta o banco de dados de condiÃ§Ãµes e importa todas do arquivo base.\n";
     }
 
     @Override

@@ -26,17 +26,17 @@ public class ComandoPrefixo implements IComando {
         if (!member.hasPermission(Permission.MANAGE_SERVER)) {
             EmbedBuilder eb = Padroes.getMensagemErro(
                     "Mortal tolo!",
-                    "_Você não é um Arquimago, não pode solicitar este ritual._\n\n" +
-                            "(é necessário ter a permissão de \"Gerente do Servidor\" para executar este comando)");
+                    "_VocÃª nÃ£o Ã© um Arquimago, nÃ£o pode solicitar este ritual._\n\n" +
+                            "(Ã© necessÃ¡rio ter a permissÃ£o de \"Gerente do Servidor\" para executar este comando)");
             canal.sendMessageEmbeds(eb.build()).queue();
             return;
         }
 
         if (args.isEmpty()) {
             EmbedBuilder eb = Padroes.getMensagemErro(
-                    "Atenção, mortal!",
-                    "_Você não fez o ritual completo, é muito perigoso continuar assim._\n\n" +
-                            "(é necessário informar o novo prefixo como parâmetro)");
+                    "AtenÃ§Ã£o, mortal!",
+                    "_VocÃª nÃ£o fez o ritual completo, Ã© muito perigoso continuar assim._\n\n" +
+                            "(Ã© necessÃ¡rio informar o novo prefixo como parÃ¢metro)");
             canal.sendMessageEmbeds(eb.build()).queue();
             return;
         }
@@ -45,8 +45,8 @@ public class ComandoPrefixo implements IComando {
         updatePrefixo(context.getGuild().getIdLong(), novoPrefixo);
 
         EmbedBuilder eb = Padroes.getMensagemSucesso(
-                "O ritual foi concluído!",
-                "_Nova sequência arcana de ativação definida._\n\n" +
+                "O ritual foi concluÃ­do!",
+                "_Nova sequÃªncia arcana de ativaÃ§Ã£o definida._\n\n" +
                         "(novo prefixo definido: `" + novoPrefixo + "`)");
         canal.sendMessageEmbeds(eb.build()).queue();
     }
@@ -59,10 +59,10 @@ public class ComandoPrefixo implements IComando {
     @Override
     public String getAjuda() {
         long guildId =0;
-        return "_Este ritual permite definir minha sequência arcana de ativação._\n\n" +
+        return "_Este ritual permite definir minha sequÃªncia arcana de ativaÃ§Ã£o._\n\n" +
                 "(define o prefixo do bot no servidor)\n" +
                 "Uso: `%s"+NOME.toLowerCase()+" <novo_prefixo>`\n" +
-                (getAliasesToString().length() > 0 ? "Tente também: " + getAliasesToString() : "");
+                (getAliasesToString().length() > 0 ? "Tente tambÃ©m: " + getAliasesToString() : "");
     }
 
     @Override
