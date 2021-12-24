@@ -46,6 +46,6 @@ public class Condicao {
     }
 
     public String getDescricaoFormatada() {
-        return "```CondiÃ§Ãµes " + getTipo() + "```\n" + getDescricao();
+        return "```Condições " + getTipo() + "```\n" + getDescricao();
     }
 }
