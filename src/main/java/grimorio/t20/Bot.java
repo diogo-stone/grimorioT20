@@ -18,7 +18,7 @@ public class Bot {
 
         JDABuilder jda = JDABuilder.createDefault(token);
         jda.addEventListeners(new ComandoListener(waiter), waiter)
-                .setActivity(Activity.watching("Prefixo: !@"))
+                .setActivity(Activity.watching("!@ajuda"))
                 .build();
     }
 
