@@ -46,12 +46,13 @@ public class ComandoAjuda implements IComando {
                             (it.isAdministrativo() && member.hasPermission(Permission.MANAGE_SERVER)) ||
                             (it.isRestritoDesenvolvedor() && member.getIdLong() == Long.parseLong(Config.get("owner_id")) )||
                             (!it.isAdministrativo() && !it.isRestritoDesenvolvedor())
-                        )
-                            builder.append(String.format(it.getResumoComando(),prefixo));
+                        ) {
+                            builder.append(String.format(it.getResumoComando(), prefixo));
                             if (it.isAdministrativo())
                                 builder.append("**Comando administrativo**\n");
                             if (it.isRestritoDesenvolvedor())
                                 builder.append("**Comando restrito ao desenvolvedor**\n");
+                        }
                     }
             );
 
