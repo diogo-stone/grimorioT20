@@ -115,7 +115,8 @@ public class ComandoCondicao implements IComando {
         return "_Mortais e seus problemas mundanos. Diga-me o que lhe aflige e eu direi as consequências disso._\n\n" +
                 "(consulta uma condição)\n" +
                 "Uso: `%s"+NOME.toLowerCase()+" <parte_do_nome_da_condição>`\n" +
-                (getAliasesToString().length() > 0 ? "Tente também: " + getAliasesToString() : "");
+                (getAliasesToString().length() > 0 ? "Tente também: " + getAliasesToString() + "\n": "") +
+                "_Dica_: você pode consultar condições pelo tipo. Tente consutlar \"medo\", por exemplo.";
     }
 
     @Override
