@@ -131,6 +131,11 @@ public class ComandoCondicao implements IComando {
     }
 
     @Override
+    public boolean isRestritoDesenvolvedor() {
+        return false;
+    }
+
+    @Override
     public List<String> getAliases() {
         return List.of("c", "cond", "condicao");
     }

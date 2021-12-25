@@ -42,11 +42,16 @@ public class ComandoAjuda implements IComando {
 
             gerenciador.getListaComandos()/*.map(IComando::getResumoComando)*/.forEach(
                     (it) -> {
-                        if ((it.isAdministrativo() && member.hasPermission(Permission.MANAGE_SERVER)) ||
-                            !it.isAdministrativo())
+                        if (
+                            (it.isAdministrativo() && member.hasPermission(Permission.MANAGE_SERVER)) ||
+                            (it.isRestritoDesenvolvedor() && member.getIdLong() == Long.parseLong(Config.get("owner_id")) )||
+                            (!it.isAdministrativo() && !it.isRestritoDesenvolvedor())
+                        )
                             builder.append(String.format(it.getResumoComando(),prefixo));
                             if (it.isAdministrativo())
                                 builder.append("**Comando administrativo**\n");
+                            if (it.isRestritoDesenvolvedor())
+                                builder.append("**Comando restrito ao desenvolvedor**\n");
                     }
             );
 
@@ -86,6 +91,11 @@ public class ComandoAjuda implements IComando {
 
     @Override
     public boolean isAdministrativo() {
+        return false;
+    }
+
+    @Override
+    public boolean isRestritoDesenvolvedor() {
         return false;
     }
 

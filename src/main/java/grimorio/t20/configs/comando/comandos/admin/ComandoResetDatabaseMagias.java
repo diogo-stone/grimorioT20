@@ -142,4 +142,9 @@ public class ComandoResetDatabaseMagias implements IComando {
     public boolean isAdministrativo() {
         return true;
     }
+
+    @Override
+    public boolean isRestritoDesenvolvedor() {
+        return true;
+    }
 }

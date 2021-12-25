@@ -14,6 +14,8 @@ public interface IComando {
 
     boolean isAdministrativo();
 
+    boolean isRestritoDesenvolvedor();
+
     default List<String> getAliases() {
         return List.of();
     }

@@ -108,4 +108,9 @@ public class ComandoResetDatabaseCondicoes implements IComando {
     public boolean isAdministrativo() {
         return true;
     }
+
+    @Override
+    public boolean isRestritoDesenvolvedor() {
+        return true;
+    }
 }

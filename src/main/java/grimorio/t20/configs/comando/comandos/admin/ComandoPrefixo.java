@@ -76,6 +76,11 @@ public class ComandoPrefixo implements IComando {
     }
 
     @Override
+    public boolean isRestritoDesenvolvedor() {
+        return false;
+    }
+
+    @Override
     public List<String> getAliases() {
         return List.of("setprefixo");
     }
