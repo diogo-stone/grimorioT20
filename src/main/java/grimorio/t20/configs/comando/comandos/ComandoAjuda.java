@@ -43,7 +43,7 @@ public class ComandoAjuda implements IComando {
             gerenciador.getListaComandos()/*.map(IComando::getResumoComando)*/.forEach(
                     (it) -> {
                         if (
-                            (it.isAdministrativo() && member.hasPermission(Permission.MANAGE_SERVER)) ||
+                            (it.isAdministrativo() && member.hasPermission(Permission.MANAGE_SERVER) && !it.isRestritoDesenvolvedor()) ||
                             (it.isRestritoDesenvolvedor() && member.getIdLong() == Long.parseLong(Config.get("owner_id")) )||
                             (!it.isAdministrativo() && !it.isRestritoDesenvolvedor())
                         ) {
