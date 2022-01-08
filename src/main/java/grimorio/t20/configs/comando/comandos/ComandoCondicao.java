@@ -89,7 +89,7 @@ public class ComandoCondicao implements IComando {
                                     canal.sendMessageEmbeds(Padroes.getMensagemOpcaoNaoExiste().build()).queue();
                                 }
                             },
-                            5L, TimeUnit.SECONDS,
+                            10L, TimeUnit.SECONDS,
                             () -> {
                                 message.delete().queue();
                                 canal.sendMessageEmbeds(
