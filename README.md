@@ -1,4 +1,6 @@
-# Grimorio T20
+#Grimorio T20
+
+##Descrição
 Esse projeto se trata de um bot do discord para consultar as magias e condições do RPG de mesa Tormenta 20.
 <BR>Algumas modificações foram feitas no nome de alguma magias e suas descrições para não ferir os direitos autorais sobre os nomes próprios da marca Tormenta.
 <BR>Todos os direitos da marca Tormenta são reservados a [Jambô Editora](https://jamboeditora.com.br/).
