@@ -349,6 +349,11 @@ public class SQLiteDataSource implements IDatabaseGerenciar {
     }
 
     @Override
+    public Map<Integer, Magia> ListarMagias(List<String> listEscolas, List<Integer> listNiveis, boolean isArcana, boolean isDivina) {
+        return new HashMap<>();
+    }
+
+    @Override
     public void addListaCondicao(ArrayList<Condicao> listaCondicoes) {
         if (listaCondicoes == null)
             return;

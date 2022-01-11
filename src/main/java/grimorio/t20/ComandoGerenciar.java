@@ -5,6 +5,7 @@ import grimorio.t20.configs.comando.ComandoContext;
 import grimorio.t20.configs.comando.IComando;
 import grimorio.t20.configs.comando.comandos.ComandoAjuda;
 import grimorio.t20.configs.comando.comandos.ComandoCondicao;
+import grimorio.t20.configs.comando.comandos.ComandoListarMagias;
 import grimorio.t20.configs.comando.comandos.ComandoMagia;
 import grimorio.t20.configs.comando.comandos.admin.ComandoPrefixo;
 import grimorio.t20.configs.comando.comandos.admin.ComandoResetDatabaseCondicoes;
@@ -31,6 +32,7 @@ public class ComandoGerenciar {
         addComando(new ComandoAjuda(this));
         // Outros comandos vão aqui
         addComando(new ComandoMagia(waiter));
+        addComando(new ComandoListarMagias());
         addComando(new ComandoCondicao(waiter));
         // Comandos administrativos
         addComando(new ComandoPrefixo());

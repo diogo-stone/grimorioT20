@@ -5,6 +5,7 @@ import java.util.List;
 
 
 import com.google.gson.Gson;
+import org.jetbrains.annotations.NotNull;
 
 public class Magia {
 
@@ -161,6 +162,10 @@ public class Magia {
 		listaAprimoramentos.add(apr);
 	}
 
+	public String getResumo() {
+		return getNome();
+	}
+
 	public String getTipoMagia() {
 		if (isArcana() && isDivina())
 			return "Universal";
@@ -212,5 +217,4 @@ public class Magia {
 	public String toJson() {
 		return new Gson().toJson(this);
 	}
-	
 }

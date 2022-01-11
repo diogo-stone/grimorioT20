@@ -6,6 +6,7 @@ import grimorio.t20.configs.Config;
 import grimorio.t20.struct.Aprimoramento;
 import grimorio.t20.struct.Condicao;
 import grimorio.t20.struct.Magia;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,16 +15,14 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 public class PostgresDataSource implements IDatabaseGerenciar {
 
     private final Logger LOGGER = LoggerFactory.getLogger(PostgresDataSource.class);
     private HikariDataSource ds;
     private Connection conexao;
+    private final String REQUER_SSL = Config.get("SSL_REQUIRED");
 
     public PostgresDataSource() {
         try {
@@ -313,7 +312,7 @@ public class PostgresDataSource implements IDatabaseGerenciar {
             return mapMagias;
 
         try (final PreparedStatement selectStmt = getConexao()
-                // SQLite
+                // Postgres
                 .prepareStatement("SELECT * " +
                         "FROM magia " +
                         "WHERE lower(nome) SIMILAR TO ? ORDER BY nome LIMIT 5;")) {
@@ -324,29 +323,29 @@ public class PostgresDataSource implements IDatabaseGerenciar {
                 Magia magia = null;
                 Aprimoramento apr = null;
                 while (rs.next()) {
-                    int id = rs.getInt("id");
-
-                    magia = mapMagias.get(id);
-                    if (magia == null)
-                        magia = new Magia();
-
-                    magia.setId(id);
-                    magia.setNome(rs.getString("nome"));
-                    magia.setNivel(rs.getInt("nivel"));
-                    magia.setArcana(rs.getBoolean("arcana"));
-                    magia.setDivina(rs.getBoolean("divina"));
-                    magia.setEscola(rs.getString("escola"));
-                    magia.setExecucao(rs.getString("execucao"));
-                    magia.setAlcance(rs.getString("alcance"));
-                    magia.setArea(rs.getString("area"));
-                    magia.setAlvo(rs.getString("alvo"));
-                    magia.setEfeito(rs.getString("efeito"));
-                    magia.setDuracao(rs.getString("duracao"));
-                    magia.setResistencia(rs.getString("resistencia"));
-                    magia.setDescricao(rs.getString("descricao"));
-                    magia.setComponenteMaterial(rs.getString("componente_material"));
-                    magia.setFonte(rs.getString("fonte"));
-
+//                    int id = rs.getInt("id");
+//
+//                    magia = mapMagias.get(id);
+//                    if (magia == null)
+//                        magia = new Magia();
+//
+//                    magia.setId(id);
+//                    magia.setNome(rs.getString("nome"));
+//                    magia.setNivel(rs.getInt("nivel"));
+//                    magia.setArcana(rs.getBoolean("arcana"));
+//                    magia.setDivina(rs.getBoolean("divina"));
+//                    magia.setEscola(rs.getString("escola"));
+//                    magia.setExecucao(rs.getString("execucao"));
+//                    magia.setAlcance(rs.getString("alcance"));
+//                    magia.setArea(rs.getString("area"));
+//                    magia.setAlvo(rs.getString("alvo"));
+//                    magia.setEfeito(rs.getString("efeito"));
+//                    magia.setDuracao(rs.getString("duracao"));
+//                    magia.setResistencia(rs.getString("resistencia"));
+//                    magia.setDescricao(rs.getString("descricao"));
+//                    magia.setComponenteMaterial(rs.getString("componente_material"));
+//                    magia.setFonte(rs.getString("fonte"));
+                    magia = extraiMagiaResultSet(rs);
                     mapMagias.put(magia.getId(), magia);
                 }
             }
@@ -354,7 +353,7 @@ public class PostgresDataSource implements IDatabaseGerenciar {
             if (mapMagias.size() > 0) {
                 String where = " OR id_magia = ?";
                 try (final PreparedStatement selectAprStmt = getConexao()
-                        // SQLite
+                        // Postgres
                         .prepareStatement(String.format("SELECT * " +
                                 "FROM aprimoramento " +
                                 "WHERE id_magia = ? %s;", where.repeat(mapMagias.size() - 1)))) {
@@ -380,6 +379,63 @@ public class PostgresDataSource implements IDatabaseGerenciar {
                                 magia.addAprimoramento(apr);
                         }
                     }
+                }
+            }
+        } catch (SQLException er) {
+            er.printStackTrace();
+        }
+        return mapMagias;
+    }
+
+    @Override
+    public Map<Integer, Magia> ListarMagias(List<String> listaEscolas, List<Integer> listaNiveis, boolean isArcana, boolean isDivina) {
+        Map<Integer, Magia> mapMagias = new HashMap<>();
+        String whereEscola = " OR lower(escola) SIMILAR TO ?",
+               whereNivel = " OR nivel = ?",
+               whereArcana = " AND arcana = ?",
+               whereDivina = " AND divina = ?";
+
+        StringBuilder where = new StringBuilder("");
+
+        if (isArcana) {
+            where.append(whereArcana);
+        }
+        if (isDivina) {
+            where.append(whereDivina);
+        }
+        if (listaEscolas.size() > 0)
+            where.append("AND (lower(escola) SIMILAR TO ?" + whereEscola.repeat(listaEscolas.size()-1) + ")");
+        if (listaNiveis.size() > 0)
+            where.append("AND (nivel = ?" + whereNivel.repeat(listaNiveis.size()-1) + ")");
+
+        if (where.length() > 4)
+            where = new StringBuilder("WHERE " + where.substring(4));
+
+        try (final PreparedStatement selectStmt = getConexao()
+                // Postgres
+                .prepareStatement("SELECT * " +
+                        "FROM magia " +
+                        where +
+                        " ORDER BY nivel, escola, nome")) {
+
+            int idx = 1;
+            if (isArcana)
+                selectStmt.setBoolean(idx++, isArcana);
+            if (isDivina)
+                selectStmt.setBoolean(idx++, isDivina);
+            for (String escola: listaEscolas) {
+                selectStmt.setString(idx++, "%" + textoBuscaSemAcentos(escola) + "%");
+            }
+            for (int nivel: listaNiveis) {
+                selectStmt.setInt(idx++, nivel);
+            }
+
+            try (final ResultSet rs = selectStmt.executeQuery()) {
+                Magia magia = null;
+                while (rs.next()) {
+                    magia = extraiMagiaResultSet(rs);
+
+                    mapMagias.put(magia.getId(), magia);
                 }
             }
         } catch (SQLException er) {
@@ -481,6 +537,29 @@ public class PostgresDataSource implements IDatabaseGerenciar {
                 .replace("?", "[?]");
     }
 
+    private Magia extraiMagiaResultSet(ResultSet rs) throws SQLException {
+        Magia magia = new Magia();
+
+        magia.setId(rs.getInt("id"));
+        magia.setNome(rs.getString("nome"));
+        magia.setNivel(rs.getInt("nivel"));
+        magia.setArcana(rs.getBoolean("arcana"));
+        magia.setDivina(rs.getBoolean("divina"));
+        magia.setEscola(rs.getString("escola"));
+        magia.setExecucao(rs.getString("execucao"));
+        magia.setAlcance(rs.getString("alcance"));
+        magia.setArea(rs.getString("area"));
+        magia.setAlvo(rs.getString("alvo"));
+        magia.setEfeito(rs.getString("efeito"));
+        magia.setDuracao(rs.getString("duracao"));
+        magia.setResistencia(rs.getString("resistencia"));
+        magia.setDescricao(rs.getString("descricao"));
+        magia.setComponenteMaterial(rs.getString("componente_material"));
+        magia.setFonte(rs.getString("fonte"));
+
+        return magia;
+    }
+
     private Connection getConexao() throws SQLException {
         if (!conexao.isValid(10)) {
             LOGGER.info("Reestabelecendo conexão.");
@@ -511,7 +590,9 @@ public class PostgresDataSource implements IDatabaseGerenciar {
 
         String username = dbUri.getUserInfo().split(":")[0];
         String password = dbUri.getUserInfo().split(":")[1];
-        String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath() + "?sslmode=require";
+        LOGGER.info(dbUri.getRawPath());
+
+        String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath() + REQUER_SSL; // + "?sslmode=require";
 
         try {
             Class.forName("org.postgresql.Driver");

@@ -3,6 +3,8 @@ package grimorio.t20.struct;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
+import java.util.Comparator;
+import java.util.List;
 
 public class Padroes {
 
@@ -50,6 +52,46 @@ public class Padroes {
                 .setFooter(magia.getFonte() + " [" + magia.getId() + "]")
                 .setThumbnail(EImagemCustoPM.getUrlPeloNivelMagia(magia.getNivel()))
                 .setDescription(magia.getDescricaoFormatada());
+    }
+
+    public static EmbedBuilder getMensagemListaMagia(List<Magia> listMagias, boolean isArcana, boolean isDivina) {
+        StringBuilder texto = new StringBuilder();
+        String escola = "";
+        int nivel = 0;
+
+        listMagias.sort(Comparator.comparing(Magia::getNivel)
+                .thenComparing(Magia::getEscola)
+                .thenComparing(Magia::getNome)
+            );
+
+        for (Magia m: listMagias) {
+            if (m.getNivel() != nivel) {
+                texto.append(String.format("%s\n**%d\u00B0 CÍRCULO**\n\n", nivel == 0 ? "" : "```", m.getNivel()));
+                escola = "";
+            }
+
+            if (!m.getEscola().equalsIgnoreCase(escola))
+                texto.append(String.format("%s_%s_\n```", escola.isEmpty() ? "" : "```", m.getEscola()));
+
+            texto.append(String.format("  %s\n", m.getResumo()));
+
+            nivel = m.getNivel();
+            escola = m.getEscola();
+        }
+
+        if (!texto.isEmpty())
+            texto.append("```");
+
+        return new EmbedBuilder()
+                .setColor(isArcana && isDivina ?
+                        COR_MAGIA_UNIVERSAL : isArcana ?
+                        COR_MAGIA_ARCANA : COR_MAGIA_DIVINA)
+                .setTitle(String.format("Magias %s", isArcana && isDivina ?
+                                        "Universais" : isArcana ?
+                                            "Arcanas" : "Divinas"
+                                        ))
+//                .setThumbnail(EImagemCustoPM.getUrlPeloNivelMagia(magia.getNivel()))
+                .setDescription(texto.toString());
     }
 
     public static EmbedBuilder getMensagemCondicao(Condicao condicao) {

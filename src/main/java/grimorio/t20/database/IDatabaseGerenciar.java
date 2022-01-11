@@ -5,6 +5,7 @@ import grimorio.t20.struct.Condicao;
 import grimorio.t20.struct.Magia;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public interface IDatabaseGerenciar {
@@ -23,6 +24,7 @@ public interface IDatabaseGerenciar {
     void addListaAprimoramentos(ArrayList<Aprimoramento> listaAprimoramentos);
 
     Map<Integer, Magia> consultaMagia(String nome);
+    Map<Integer, Magia> ListarMagias(List<String> listEscolas, List<Integer> listNiveis, boolean isArcana, boolean isDivina);
 
     // Condições
     void addListaCondicao(ArrayList<Condicao> listaCondicoes);
