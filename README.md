@@ -2,8 +2,8 @@
 
 ##Descrição
 Esse projeto se trata de um bot do discord para consultar as magias e condições do RPG de mesa Tormenta 20.
-<BR>Algumas modificações foram feitas no nome de alguma magias e suas descrições para não ferir os direitos autorais sobre os nomes próprios da marca Tormenta.
-<BR>Todos os direitos da marca Tormenta são reservados a [Jambô Editora](https://jamboeditora.com.br/).
+Algumas modificações foram feitas no nome de alguma magias e suas descrições para não ferir os direitos autorais sobre os nomes próprios da marca Tormenta.
+Todos os direitos da marca Tormenta são reservados a [Jambô Editora](https://jamboeditora.com.br/).
 
 ##Termos de Serviço
 O _Grimório T20_ é um bot para o discord gratuito desenvolvido para a comunidade. As informações que ele disponibiliza estão sob a licença OGL (Open Game License) a qual o jogo de RPG _Tormenta 20_ está embasada. 
