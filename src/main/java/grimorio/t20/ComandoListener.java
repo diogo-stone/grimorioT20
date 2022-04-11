@@ -3,6 +3,7 @@ package grimorio.t20;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import grimorio.t20.database.IDatabaseGerenciar;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -34,9 +35,22 @@ public class ComandoListener extends ListenerAdapter {
         String raw = event.getMessage().getContentRaw();
 
         if (raw.startsWith(prefixo)) {
-            gerenciador.gerenciar(event, prefixo);
+            gerenciador.gerenciarMessageReceived(event, prefixo);
         }
 
     }
 
+    @Override
+    public void onSlashCommand(@NotNull SlashCommandEvent event) {
+        User user = event.getUser();
+
+        if (user.isBot()) {
+            return;
+        }
+
+//        if (!event.isFromGuild())
+//            return;
+
+        gerenciador.gerenciarSlashCommand(event);
+    }
 }

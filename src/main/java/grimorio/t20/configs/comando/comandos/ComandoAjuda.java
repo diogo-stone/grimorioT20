@@ -1,22 +1,17 @@
 package grimorio.t20.configs.comando.comandos;
 
 import grimorio.t20.ComandoGerenciar;
-import grimorio.t20.VeryBadDesign;
 import grimorio.t20.configs.Config;
-import grimorio.t20.configs.comando.ComandoContext;
 import grimorio.t20.configs.comando.IComando;
+import grimorio.t20.configs.comando.IComandoContext;
 import grimorio.t20.database.IDatabaseGerenciar;
 import grimorio.t20.struct.Padroes;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 
-import java.awt.*;
 import java.util.List;
-import java.util.Locale;
 
 public class ComandoAjuda implements IComando {
 
@@ -29,7 +24,7 @@ public class ComandoAjuda implements IComando {
     }
 
     @Override
-    public void gerenciar(ComandoContext context) {
+    public void gerenciar(IComandoContext context) {
         List<String> args = context.getArgs();
         TextChannel canal = context.getChannel();
         Member member = context.getMember();
@@ -38,10 +33,15 @@ public class ComandoAjuda implements IComando {
 
         if (args.isEmpty()) {
             StringBuilder builder = new StringBuilder();
-            String prefixo = VeryBadDesign.PREFIXES.get(context.getGuild().getIdLong());
 
             gerenciador.getListaComandos()/*.map(IComando::getResumoComando)*/.forEach(
                     (it) -> {
+                        String prefixo = Config.get("PREFIXO");
+                        if (context.isMessageEvent())
+                            prefixo = IDatabaseGerenciar.INSTANCE.getPrefixo(context.getGuild().getIdLong());
+                        else if (context.isSlashEvent())
+                            prefixo = "/";
+
                         if (
                             (it.isAdministrativo() && member.hasPermission(Permission.MANAGE_SERVER) && !it.isRestritoDesenvolvedor()) ||
                             (it.isRestritoDesenvolvedor() && member.getIdLong() == Long.parseLong(Config.get("owner_id")) )||
@@ -70,8 +70,13 @@ public class ComandoAjuda implements IComando {
                 .setDescription(String.format("_Este ritual não existe._\n\n" +
                         "(comando `%s` não encontrado)", consulta));
         } else {
+            String prefixo = Config.get("PREFIXO");
+            if (context.isMessageEvent())
+                prefixo = IDatabaseGerenciar.INSTANCE.getPrefixo(context.getGuild().getIdLong());
+            else if (context.isSlashEvent())
+                prefixo = "/";
             eb.setTitle(cmd.getNome())
-                    .setDescription(cmd.getAjuda().replace("%s", IDatabaseGerenciar.INSTANCE.getPrefixo(context.getGuild().getIdLong())));
+                    .setDescription(cmd.getAjuda(context.isMessageEvent()).replace("%s", prefixo));
         }
 
         canal.sendMessageEmbeds(eb.build()).queue();
@@ -83,11 +88,11 @@ public class ComandoAjuda implements IComando {
     }
 
     @Override
-    public String getAjuda() {
+    public String getAjuda(boolean mostrarAliases) {
         return "_Exibe a lista de rituais e segredos arcanos que eu conheço._\n\n" +
                 "(exibe a lista de comandos ou mais informações sobre um comando informado)\n" +
                 "Uso: `%s"+NOME.toLowerCase()+" [comando]`\n" +
-                (getAliasesToString().length() > 0 ? "Tente também: " + getAliasesToString() : "");
+                (mostrarAliases && getAliasesToString().length() > 0 ? "Tente também: " + getAliasesToString() : "");
     }
 
     @Override
@@ -110,4 +115,5 @@ public class ComandoAjuda implements IComando {
     public List<String> getAliases() {
         return List.of("cmd", "cmds", "comandos", "help");
     }
+
 }

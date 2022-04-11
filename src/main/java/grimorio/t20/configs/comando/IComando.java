@@ -4,11 +4,11 @@ import java.util.List;
 
 public interface IComando {
 
-    void gerenciar(ComandoContext context);
+    void gerenciar(IComandoContext context);
 
     String getNome();
 
-    String getAjuda();
+    String getAjuda(boolean mostrarAliases);
 
     String getResumoComando();
 

@@ -1,7 +1,7 @@
 package grimorio.t20.configs.comando.comandos;
 
-import grimorio.t20.configs.comando.ComandoContext;
 import grimorio.t20.configs.comando.IComando;
+import grimorio.t20.configs.comando.IComandoContext;
 import grimorio.t20.database.IDatabaseGerenciar;
 import grimorio.t20.struct.Magia;
 import grimorio.t20.struct.Padroes;
@@ -16,7 +16,7 @@ public class ComandoListarMagias implements IComando {
     public static final String NOME = "ListarMagias";
 
     @Override
-    public void gerenciar(ComandoContext context) {
+    public void gerenciar(IComandoContext context) {
         List<String> args = context.getArgs();
         TextChannel canal = context.getChannel();
         List<String> listEscolas = new ArrayList<>();
@@ -99,25 +99,43 @@ public class ComandoListarMagias implements IComando {
     }
 
     @Override
-    public String getAjuda() {
-        return "_Vamos, mortal. Diga-me quais tipos de feitiço procuras e eu lhe enaltecerei com conheicmento._\n\n" +
+    public String getAjuda(boolean mostrarAliases) {
+        String ajuda = "_Vamos, mortal. Diga-me quais tipos de feitiço procuras e eu lhe enaltecerei com conheicmento._\n\n" +
                 "(consulta uma lista de magias baseado nos parâmetros informados)\n" +
-                "Uso: `%s"+NOME.toLowerCase()+" <parametros>`\n\n" +
-                "_Parâmetros disponíveis_:\n" +
-                "`-1`, `-2`, `-3`, `-4` e `-5` filtram os círculos das magias que serão listadas. Não informar um " +
-                "círculo listará magias de todos os círculos que cumpram o restante das condições. É possível informar " +
-                "mais de um círculo ao mesmo tempo, por exemplo: `%s"+NOME.toLowerCase()+" -2 -5` lista todas as magias " +
-                "arcanas e divinas de 2º e 5º círculo.\n\n" +
-                "`-a` define que apenas magias arcanas devem ser exibidas.\n" +
-                "`-d` define que apenas magias divinas devem ser exibidas.\n" +
-                "Informar `-a` e `-d` lista tanto as magias divinas como as magias arcanas, que é o mesmo que não " +
-                "informar qualquer um deles.\n\n" +
-                "`<parte_do_nome_da_escola>` filtra as escolas das magias. Você pode informar mais de uma, separando-as " +
-                "com espaços. Se nenhuma for informada, todas que cumpram as outras condições serão exibidas. Por " +
-                "exemplo: `%s"+NOME.toLowerCase()+" ilusao adiv -2` exibe todas as magias de ilusão e adivinhação de " +
-                "2º círculo, arcanas e divinas.\n\n" +
-                (getAliasesToString().length() > 0 ? "Tente também: " + getAliasesToString() + "\n" : "") +
-                "_Dica_: não é preciso colocar o nome das escolas por completo.";
+                "Uso: `%s"+NOME.toLowerCase()+" <parametros>`\n\n";
+
+        if (mostrarAliases) {
+            ajuda += "_Parâmetros disponíveis_:\n" +
+                    "`-1`, `-2`, `-3`, `-4` e `-5` filtram os círculos das magias que serão listadas. Não informar um " +
+                    "círculo listará magias de todos os círculos que cumpram o restante das condições. É possível informar " +
+                    "mais de um círculo ao mesmo tempo, por exemplo: `%s" + NOME.toLowerCase() + " -2 -5` lista todas as magias " +
+                    "arcanas e divinas de 2º e 5º círculo.\n\n" +
+                    "`-a` define que apenas magias arcanas devem ser exibidas.\n" +
+                    "`-d` define que apenas magias divinas devem ser exibidas.\n" +
+                    "Informar `-a` e `-d` lista tanto as magias divinas como as magias arcanas, que é o mesmo que não " +
+                    "informar qualquer um deles.\n\n" +
+                    "`<parte_do_nome_da_escola>` filtra as escolas das magias. Você pode informar mais de uma, separando-as " +
+                    "com espaços. Se nenhuma for informada, todas que cumpram as outras condições serão exibidas. Por " +
+                    "exemplo: `%s" + NOME.toLowerCase() + " ilusao adiv -2` exibe todas as magias de ilusão e adivinhação de " +
+                    "2º círculo, arcanas e divinas.\n\n" +
+                    (mostrarAliases && getAliasesToString().length() > 0 ? "Tente também: " + getAliasesToString() + "\n" : "");
+        } else {
+            ajuda += "_Parâmetros_:\n" +
+                    "\u2022 niveis: Os valores aceitos são `-1`, `-2`, `-3`, `-4` e `-5`.\nOs valores representam os círculos " +
+                    "das magias que serão listadas.\nNão informar um círculo listará magias de todos os círculos que " +
+                    "cumpram o restante das condições.\nÉ possível informar mais de um círculo ao mesmo tempo, por exemplo: " +
+                    "`-2 -5` lista todas as de 2º e 5º círculo que cumpram o restante das condições.\n\n" +
+
+                    "\u2022 escolas: filtra as magias pelas suas escolas.\nVocê pode informar mais de uma, separando-as " +
+                    "com espaços.\nSe nenhuma for informada, todas que cumpram as outras condições serão exibidas, por " +
+                    "exemplo: `ilusao adiv -2` exibe todas as magias de ilusão e adivinhação de 2º círculo, arcanas e divinas.\n\n" +
+
+                    "\u2022 origem: Define se as magias listadas serão arcanas, divinas ou de qualquer tipo.\n" +
+                    "Magias `Universais` aparecem independente da opção selecionada.\n\n";
+        }
+        ajuda += "_Dica_: não é preciso colocar o nome das escolas por completo. \"ilu\" já suficiente para encontrar magias " +
+                "de ilusão, por exemplo.";
+        return ajuda;
     }
 
     @Override
@@ -140,4 +158,5 @@ public class ComandoListarMagias implements IComando {
     public List<String> getAliases() {
         return List.of("lm", "listm", "listmag");
     }
+
 }

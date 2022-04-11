@@ -3,12 +3,10 @@ package grimorio.t20.configs.comando.comandos.admin;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import grimorio.t20.configs.Config;
-import grimorio.t20.configs.comando.ComandoContext;
 import grimorio.t20.configs.comando.IComando;
+import grimorio.t20.configs.comando.IComandoContext;
 import grimorio.t20.database.IDatabaseGerenciar;
-import grimorio.t20.struct.Aprimoramento;
 import grimorio.t20.struct.Condicao;
-import grimorio.t20.struct.Magia;
 import grimorio.t20.struct.Padroes;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -25,7 +23,7 @@ public class ComandoResetDatabaseCondicoes implements IComando {
     public static final String NOME = "resetDatabaseCondicoes";
 
     @Override
-    public void gerenciar(ComandoContext context) {
+    public void gerenciar(IComandoContext context) {
         final TextChannel canal = context.getChannel();
         final List<String> args = context.getArgs();
         final Member member = context.getMember();
@@ -91,7 +89,7 @@ public class ComandoResetDatabaseCondicoes implements IComando {
     }
 
     @Override
-    public String getAjuda() {
+    public String getAjuda(boolean mostrarAliases) {
         return "_Este poderoso ritual só pode ser invocado pelo meu mestre, o grande Arquimago das Pedras.\n" +
                 "Mortais podem apenas fazer perguntas incesantes e rituais pífios._\n\n" +
                 "(atualiza o banco de dados de condições do bot)\n" +
@@ -113,4 +111,5 @@ public class ComandoResetDatabaseCondicoes implements IComando {
     public boolean isRestritoDesenvolvedor() {
         return true;
     }
+
 }

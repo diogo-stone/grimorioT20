@@ -18,8 +18,10 @@ public class Bot {
 
         JDABuilder jda = JDABuilder.createDefault(token);
         jda.addEventListeners(new ComandoListener(waiter), waiter)
-                .setActivity(Activity.watching("!@ajuda"))
+                .setActivity(Activity.watching("Agora com Slash Commands!\n/ajuda"))
                 .build();
+
+
     }
 
     public static void main(String[] args) throws LoginException {

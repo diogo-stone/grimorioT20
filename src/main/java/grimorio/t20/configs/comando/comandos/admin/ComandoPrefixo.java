@@ -1,9 +1,8 @@
 package grimorio.t20.configs.comando.comandos.admin;
 
 import grimorio.t20.VeryBadDesign;
-import grimorio.t20.configs.Config;
-import grimorio.t20.configs.comando.ComandoContext;
 import grimorio.t20.configs.comando.IComando;
+import grimorio.t20.configs.comando.IComandoContext;
 import grimorio.t20.database.IDatabaseGerenciar;
 import grimorio.t20.struct.Padroes;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -18,7 +17,7 @@ public class ComandoPrefixo implements IComando {
     public static final String NOME = "prefixo";
 
     @Override
-    public void gerenciar(ComandoContext context) {
+    public void gerenciar(IComandoContext context) {
         final TextChannel canal = context.getChannel();
         final List<String> args = context.getArgs();
         final Member member = context.getMember();
@@ -57,7 +56,7 @@ public class ComandoPrefixo implements IComando {
     }
 
     @Override
-    public String getAjuda() {
+    public String getAjuda(boolean mostrarAliases) {
         long guildId =0;
         return "_Este ritual permite definir minha sequência arcana de ativação._\n\n" +
                 "(define o prefixo do bot no servidor)\n" +
@@ -67,7 +66,8 @@ public class ComandoPrefixo implements IComando {
 
     @Override
     public String getResumoComando() {
-        return "\n`%s" + NOME.toLowerCase() + " <novo_prefixo>`\nDefine o prefixo do bot no servidor.\n";
+        return "\n`%s" + NOME.toLowerCase() + " <novo_prefixo>`\nDefine o prefixo do bot no servidor.\n" +
+                "**NÃO DISPONÍVEL POR COMANDOS DE BARRA**";
     }
 
     @Override

@@ -1,15 +1,16 @@
 package grimorio.t20.configs.comando.comandos;
 
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
-import grimorio.t20.configs.comando.ComandoContext;
 import grimorio.t20.configs.comando.IComando;
+import grimorio.t20.configs.comando.IComandoContext;
 import grimorio.t20.database.IDatabaseGerenciar;
 import grimorio.t20.struct.Condicao;
-import grimorio.t20.struct.Magia;
 import grimorio.t20.struct.Padroes;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.interactions.components.Button;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -22,7 +23,7 @@ public class ComandoCondicao implements IComando {
     public ComandoCondicao(EventWaiter waiter) { this.waiter = waiter; }
 
     @Override
-    public void gerenciar(ComandoContext context) {
+    public void gerenciar(IComandoContext context) {
         List<String> args = context.getArgs();
         TextChannel canal = context.getChannel();
 
@@ -50,10 +51,11 @@ public class ComandoCondicao implements IComando {
             ).queue();
             return;
         }
-
+        List<Button> listaBotoes = new ArrayList<>();
         int i = 1;
         String condicoes = "";
         for (Condicao condicao: mapCondicoes.values()) {
+            listaBotoes.add(Button.primary(String.valueOf(i), String.valueOf(i)));
             condicoes = condicoes.concat(String.format("\n**[%d]** %s", i++, condicao.getNome()));
         }
 
@@ -64,15 +66,16 @@ public class ComandoCondicao implements IComando {
                                                 "Digite o número referente a condição que desejas verificar.\n" +
                                                 "%s", condicoes))
                                 .build())
+                .setActionRow(listaBotoes)
                 .queue((message -> {
                     this.waiter.waitForEvent(
-                            MessageReceivedEvent.class,
-                            (e) -> e.getAuthor().getIdLong() == context.getAuthor().getIdLong() && !e.getAuthor().isBot(),
+                            ButtonClickEvent.class,
+                            (e) -> e.getInteraction().getUser().getIdLong() == context.getAuthor().getIdLong() && !e.getUser().isBot(),
                             (e) -> {
                                 message.delete().queue();
-                                String idStr = e.getMessage().getContentRaw();
+                                String idStr = e.getButton().getId();
                                 if (idStr.matches("\\d+")) {
-                                    e.getMessage().delete().queue();
+//                                    e.getMessage().delete().queue();
                                     int id = Integer.parseInt(idStr);
                                     if (id <= mapCondicoes.size()) {
                                         Condicao condicao = (Condicao) mapCondicoes.values().toArray()[id - 1];
@@ -111,11 +114,11 @@ public class ComandoCondicao implements IComando {
     }
 
     @Override
-    public String getAjuda() {
+    public String getAjuda(boolean mostrarAliases) {
         return "_Mortais e seus problemas mundanos. Diga-me o que lhe aflige e eu direi as consequências disso._\n\n" +
                 "(consulta uma condição)\n" +
                 "Uso: `%s"+NOME.toLowerCase()+" <parte_do_nome_da_condição>`\n" +
-                (getAliasesToString().length() > 0 ? "Tente também: " + getAliasesToString() + "\n": "") +
+                (mostrarAliases && getAliasesToString().length() > 0 ? "Tente também: " + getAliasesToString() + "\n": "") +
                 "_Dica_: você pode consultar condições pelo tipo. Tente consutlar \"medo\", por exemplo.";
     }
 

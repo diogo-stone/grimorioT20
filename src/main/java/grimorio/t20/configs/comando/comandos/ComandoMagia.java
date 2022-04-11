@@ -1,14 +1,16 @@
 package grimorio.t20.configs.comando.comandos;
 
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
-import grimorio.t20.configs.comando.ComandoContext;
 import grimorio.t20.configs.comando.IComando;
+import grimorio.t20.configs.comando.IComandoContext;
 import grimorio.t20.database.IDatabaseGerenciar;
 import grimorio.t20.struct.Magia;
 import grimorio.t20.struct.Padroes;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.interactions.components.Button;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -23,7 +25,7 @@ public class ComandoMagia implements IComando {
     }
 
     @Override
-    public void gerenciar(ComandoContext context) {
+    public void gerenciar(IComandoContext context) {
         List<String> args = context.getArgs();
         TextChannel canal = context.getChannel();
 
@@ -52,27 +54,31 @@ public class ComandoMagia implements IComando {
             return;
         }
 
+        List<Button> listaBotoes = new ArrayList<>();
         int i = 1;
         String magias = "";
         for (Magia magia: mapMagias.values()) {
+            listaBotoes.add(Button.primary(String.valueOf(i), String.valueOf(i)));
             magias = magias.concat(String.format("\n**[%d]** %s", i++, magia.getNome()));
         }
 
         canal.sendMessageEmbeds(
                 Padroes.getMensagemSucesso(
                     "Escolha uma magia",
-                    String.format("Sua consulta ao acervo retornou muitos resultados.\nDigite o número referente a magia " +
-                            "que desejas verificar.\n%s", magias))
-                .build())
-            .queue((message -> {
-                this.waiter.waitForEvent(
-                        MessageReceivedEvent.class,
-                        (e) -> e.getAuthor().getIdLong() == context.getAuthor().getIdLong() && !e.getAuthor().isBot(),
+                    String.format("Sua consulta ao acervo retornou muitos resultados.\nEscolha uma opção." +
+                            "\n%s", magias))
+                    .build())
+                .setActionRow(listaBotoes)
+                .queue(
+                (message -> {
+
+                        this.waiter.waitForEvent(
+                        ButtonClickEvent.class,
+                        (e) -> e.getInteraction().getUser().getIdLong() == context.getAuthor().getIdLong() && !e.getUser().isBot(),
                         (e) -> {
                             message.delete().queue();
-                            String idStr = e.getMessage().getContentRaw();
+                            String idStr = e.getButton().getId();
                             if (idStr.matches("\\d+")) {
-                                e.getMessage().delete().queue();
                                 int id = Integer.parseInt(idStr);
                                 if (id <= mapMagias.size()) {
                                     Magia magia = (Magia) mapMagias.values().toArray()[id - 1];
@@ -101,8 +107,50 @@ public class ComandoMagia implements IComando {
                                     ).build()
                             ).queue();
                         }
+                    );
+                })
                 );
-            }));
+
+                    //////
+
+//                    this.waiter.waitForEvent(
+//                        MessageReceivedEvent.class,
+//                        (e) -> e.getAuthor().getIdLong() == context.getAuthor().getIdLong() && !e.getAuthor().isBot(),
+//                        (e) -> {
+//                            message.delete().queue();
+//                            String idStr = e.getMessage().getContentRaw();
+//                            if (idStr.matches("\\d+")) {
+//                                e.getMessage().delete().queue();
+//                                int id = Integer.parseInt(idStr);
+//                                if (id <= mapMagias.size()) {
+//                                    Magia magia = (Magia) mapMagias.values().toArray()[id - 1];
+//                                    if (magia != null)
+//                                        canal.sendMessageEmbeds(
+//                                                Padroes.getMensagemMagia(magia).build()
+//                                        ).queue();
+//                                    else
+//                                        canal.sendMessageEmbeds(Padroes.getMensagemOpcaoNaoExiste().build()).queue();
+//                                } else {
+//                                    canal.sendMessageEmbeds(Padroes.getMensagemOpcaoNaoExiste().build()).queue();
+//                                }
+//                            } else {
+//                                canal.sendMessageEmbeds(Padroes.getMensagemOpcaoNaoExiste().build()).queue();
+//                            }
+//                        },
+//                        10L, TimeUnit.SECONDS,
+//                        () -> {
+//                            message.delete().queue();
+//                            canal.sendMessageEmbeds(
+//                                    Padroes.getMensagemErro(
+//                                            "Que infortúnio",
+//                                            "_Eu não tenho todo tempo do mundo, mortal.\nVolte quando souber " +
+//                                                    "o que procuras.\n\n" +
+//                                                    "(você não selecionou uma magia da lista)_"
+//                                    ).build()
+//                            ).queue();
+//                        }
+//                );
+//            }));
     }
 
     @Override
@@ -111,11 +159,11 @@ public class ComandoMagia implements IComando {
     }
 
     @Override
-    public String getAjuda() {
+    public String getAjuda(boolean mostrarAliases) {
         return "_Vamos, mortal. Diga-me qual feitiço procuras e eu lhe enaltecerei com conheicmento._\n\n" +
                 "(consulta uma magia)\n" +
                 "Uso: `%s"+NOME.toLowerCase()+" <parte_do_nome_da_magia>`\n" +
-                (getAliasesToString().length() > 0 ? "Tente também: " + getAliasesToString() + "\n" : "") +
+                (mostrarAliases && getAliasesToString().length() > 0 ? "Tente também: " + getAliasesToString() + "\n" : "") +
                 "_Dica_: não é preciso colocar aspas para nomes que contenham espaços.";
     }
 
