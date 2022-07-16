@@ -4,10 +4,7 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import grimorio.t20.configs.comando.MessageComandoContext;
 import grimorio.t20.configs.comando.IComando;
 import grimorio.t20.configs.comando.SlashComandoContext;
-import grimorio.t20.configs.comando.comandos.ComandoAjuda;
-import grimorio.t20.configs.comando.comandos.ComandoCondicao;
-import grimorio.t20.configs.comando.comandos.ComandoListarMagias;
-import grimorio.t20.configs.comando.comandos.ComandoMagia;
+import grimorio.t20.configs.comando.comandos.*;
 import grimorio.t20.configs.comando.comandos.admin.ComandoPrefixo;
 import grimorio.t20.configs.comando.comandos.admin.ComandoResetDatabaseCondicoes;
 import grimorio.t20.configs.comando.comandos.admin.ComandoResetDatabaseMagias;
@@ -34,6 +31,8 @@ public class ComandoGerenciar {
         addComando(new ComandoMagia(waiter));
         addComando(new ComandoListarMagias());
         addComando(new ComandoCondicao(waiter));
+        addComando(new ComandoErrata());
+        addComando(new ComandoUpdate());
         // Comandos administrativos
         addComando(new ComandoPrefixo());
         addComando(new ComandoResetDatabaseMagias());

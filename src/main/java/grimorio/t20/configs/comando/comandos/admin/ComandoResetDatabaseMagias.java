@@ -72,7 +72,14 @@ public class ComandoResetDatabaseMagias implements IComando {
 
         ArrayList<Aprimoramento> listaAprimoramentos = new ArrayList<>();
 //        int id = 1, idApr;
+        int idMagia = 1, idApr = 1;
         for (Magia magia : listaMagias) {
+            magia.setId(idMagia++);
+            idApr = 1;
+            for (Aprimoramento apr : magia.getListaAprimoramentos()) {
+                apr.setIdMagia(magia.getId());
+                apr.setId(idApr++);
+            }
             listaAprimoramentos.addAll(magia.getListaAprimoramentos());
         }
 //            idApr = 1;
@@ -100,6 +107,8 @@ public class ComandoResetDatabaseMagias implements IComando {
 //            e.printStackTrace();
 //        }
 
+//        IDatabaseGerenciar.INSTANCE.truncateAprimoramentos();
+        IDatabaseGerenciar.INSTANCE.truncateMagias();
         IDatabaseGerenciar.INSTANCE.addListaMagias(listaMagias);
         IDatabaseGerenciar.INSTANCE.addListaAprimoramentos(listaAprimoramentos);
 

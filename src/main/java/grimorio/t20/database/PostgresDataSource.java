@@ -3,9 +3,7 @@ package grimorio.t20.database;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import grimorio.t20.configs.Config;
-import grimorio.t20.struct.Aprimoramento;
-import grimorio.t20.struct.Condicao;
-import grimorio.t20.struct.Magia;
+import grimorio.t20.struct.*;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +75,21 @@ public class PostgresDataSource implements IDatabaseGerenciar {
                     "exclusivo VARCHAR(255) NOT NULL," +
                     "PRIMARY KEY (id_magia, id)," +
                     "FOREIGN KEY (id_magia) REFERENCES magia(id)" +
+                    ");");
+
+            statement.execute("CREATE TABLE IF NOT EXISTS errata (" +
+                    "id INTEGER NOT NULL," +
+                    "data VARCHAR(255) NOT NULL," +
+                    "descricao TEXT NOT NULL," +
+                    "versao VARCHAR(255) NOT NULL," +
+                    "PRIMARY KEY (id) " +
+                    ");");
+
+            statement.execute("CREATE TABLE IF NOT EXISTS update (" +
+                    "id INTEGER NOT NULL," +
+                    "data VARCHAR(255) NOT NULL," +
+                    "descricao TEXT NOT NULL," +
+                    "PRIMARY KEY (id) " +
                     ");");
         } catch(SQLException er) {
             er.printStackTrace();
@@ -305,6 +318,30 @@ public class PostgresDataSource implements IDatabaseGerenciar {
     }
 
     @Override
+    public void truncateMagias() {
+         try (final Statement truncateStatement = getConexao()
+                // Postgres
+                .createStatement()) {
+
+            truncateStatement.execute("BEGIN TRANSACTION; TRUNCATE magia CASCADE; COMMIT;");
+        } catch (SQLException er) {
+            er.printStackTrace();
+        }
+    }
+
+    @Override
+    public void truncateAprimoramentos() {
+        try (final Statement truncateStatement = getConexao()
+                // Postgres
+                .createStatement()) {
+
+            truncateStatement.execute("BEGIN TRANSACTION; TRUNCATE aprimoramento CASCADE; COMMIT;");
+        } catch (SQLException er) {
+            er.printStackTrace();
+        }
+    }
+
+    @Override
     public Map<Integer, Magia> consultaMagia(String nome) {
         Map<Integer, Magia> mapMagias = new HashMap<>();
 
@@ -523,6 +560,89 @@ public class PostgresDataSource implements IDatabaseGerenciar {
             er.printStackTrace();
         }
         return mapCondicoes;
+    }
+
+    @Override
+    public Map<Integer, Errata> consultaErrata(String id) {
+        Map<Integer, Errata> mapErratas = new HashMap<>();
+
+        if (id == null)
+            return mapErratas;
+
+        try (final PreparedStatement selectStmt = getConexao()
+                // Postgres
+                .prepareStatement("SELECT * " +
+                        "FROM errata " +
+                        (id.isEmpty() ? "" : "WHERE id = ? ") +
+                        "ORDER BY id DESC LIMIT 1;")) {
+
+            if (!id.isEmpty()) {
+                int idInt = 0;
+                try {
+                    idInt = Integer.parseInt(id);
+                } catch(Exception er) {}
+                selectStmt.setInt(1, idInt);
+            }
+
+            try (final ResultSet rs = selectStmt.executeQuery()) {
+                Errata errata = null;
+
+                while (rs.next()) {
+                    errata = new Errata();
+                    errata.setId(rs.getInt("id"));
+                    errata.setData(rs.getString("data"));
+                    errata.setDescricao(rs.getString("descricao"));
+                    errata.setVersao(rs.getString("versao"));
+
+                    mapErratas.put(errata.getId(), errata);
+                }
+            }
+
+        } catch (SQLException er) {
+            er.printStackTrace();
+        }
+        return mapErratas;
+    }
+
+    @Override
+    public Map<Integer, Update> consultaUpdate(String id) {
+        Map<Integer, Update> mapUpdates = new HashMap<>();
+
+        if (id == null)
+            return mapUpdates;
+
+        try (final PreparedStatement selectStmt = getConexao()
+                // Postgres
+                .prepareStatement("SELECT * " +
+                        "FROM update " +
+                        (id.isEmpty() ? "" : "WHERE id = ? ") +
+                        "ORDER BY id DESC LIMIT 1;")) {
+
+            if (!id.isEmpty()) {
+                int idInt = 0;
+                try {
+                    idInt = Integer.parseInt(id);
+                } catch(Exception er) {}
+                selectStmt.setInt(1, idInt);
+            }
+
+            try (final ResultSet rs = selectStmt.executeQuery()) {
+                Update update = null;
+
+                while (rs.next()) {
+                    update = new Update();
+                    update.setId(rs.getInt("id"));
+                    update.setData(rs.getString("data"));
+                    update.setDescricao(rs.getString("descricao"));
+
+                    mapUpdates.put(update.getId(), update);
+                }
+            }
+
+        } catch (SQLException er) {
+            er.printStackTrace();
+        }
+        return mapUpdates;
     }
 
     private String textoBuscaSemAcentos(String texto) {

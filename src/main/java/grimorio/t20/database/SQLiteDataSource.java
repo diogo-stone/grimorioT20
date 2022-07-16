@@ -3,9 +3,7 @@ package grimorio.t20.database;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import grimorio.t20.configs.Config;
-import grimorio.t20.struct.Aprimoramento;
-import grimorio.t20.struct.Condicao;
-import grimorio.t20.struct.Magia;
+import grimorio.t20.struct.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -266,6 +264,16 @@ public class SQLiteDataSource implements IDatabaseGerenciar {
     }
 
     @Override
+    public void truncateMagias() {
+        // TODO // Não há necessidade dessa implementação
+    }
+
+    @Override
+    public void truncateAprimoramentos() {
+        // TODO // Não há necessidade dessa implementação
+    }
+
+    @Override
     public Map<Integer, Magia> consultaMagia(String nome) {
         Map<Integer, Magia> mapMagias = new HashMap<>();
 
@@ -426,6 +434,18 @@ public class SQLiteDataSource implements IDatabaseGerenciar {
             er.printStackTrace();
         }
         return mapCondicoes;
+    }
+
+    @Override
+    public Map<Integer, Errata> consultaErrata(String id) {
+        // TODO // Não há necessidade dessa implementação
+        return null;
+    }
+
+    @Override
+    public Map<Integer, Update> consultaUpdate(String id) {
+        // TODO // Não há necessidade dessa implementação
+        return null;
     }
 
     private String textoBuscaSemAcentos(String texto) {
